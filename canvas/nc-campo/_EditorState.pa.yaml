@@ -1,0 +1,10 @@
+EditorState:
+  ScreensOrder:
+    - Screen1
+    - scrNovaOcorrencia
+    - scrConfirmacao
+    - scrDetalhe
+  ComponentDefinitionsOrder:
+    - cmpCabecalho
+    - cmpCardOcorrencia
+    - cmpSeloStatus

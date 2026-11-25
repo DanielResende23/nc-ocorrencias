@@ -1,0 +1,417 @@
+Screens:
+  scrConfirmacao:
+    Properties:
+      Fill: =CorFundo
+    Children:
+      - conConRaiz:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =CorFundo
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Width: =Parent.Width
+          Children:
+            - cmpConCabecalho:
+                Control: CanvasComponent
+                ComponentName: cmpCabecalho
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Height: =96
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Subtitulo: ="Guarde o número do protocolo"
+                  Titulo: ="Ocorrência registrada"
+            - conConCorpo:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =12
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =16
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                Children:
+                  - conConSucesso:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =CorBorda
+                        BorderThickness: =1
+                        Fill: =CorSuperficie
+                        FillPortions: =0
+                        Height: =176
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =4
+                        LayoutJustifyContent: =LayoutJustifyContent.Center
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =16
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - icoConOk:
+                            Control: ModernIcon
+                            Properties:
+                              AccessibleLabel: ="Ocorrência registrada com sucesso"
+                              AlignInContainer: =AlignInContainer.Center
+                              Height: =48
+                              Icon: ="CheckmarkCircle"
+                              IconColor: =CorSucesso
+                              IconStyle: =IconStyle.Filled
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Width: =48
+                        - lblConRotulo:
+                            Control: ModernText
+                            Properties:
+                              Align: =Align.Center
+                              Color: =CorTextoSuave
+                              Font: =FonteNC
+                              Height: =20
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingTop: =0
+                              Size: =13
+                              Text: ="Protocolo"
+                              Wrap: =false
+                        - lblConProtocolo:
+                            Control: ModernText
+                            Properties:
+                              AccessibleLabel: ="Protocolo " & Coalesce(gblProtocolo.protocolo, gblOcorrenciaCriada.Protocolo)
+                              Align: =Align.Center
+                              Color: =CorPrimaria
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Bold
+                              Height: =44
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingTop: =0
+                              Size: =34
+                              Text: =Coalesce(gblProtocolo.protocolo, gblOcorrenciaCriada.Protocolo)
+                              Wrap: =false
+                        - lblConRegistrado:
+                            Control: ModernText
+                            Properties:
+                              Align: =Align.Center
+                              Color: =CorTextoSuave
+                              Font: =FonteNC
+                              Height: =20
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingTop: =0
+                              Size: =12
+                              Text: ="Registrada em " & Text(gblOcorrenciaCriada.'Data de Criação', "dd/mm/yyyy hh:mm")
+                              Wrap: =false
+                  - conConCardBox:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =148
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - cmpConCard:
+                            Control: CanvasComponent
+                            ComponentName: cmpCardOcorrencia
+                            Properties:
+                              Abertura: =Text(gblOcorrenciaCriada.'Data de Criação', "dd/mm/yyyy hh:mm")
+                              AlignInContainer: =AlignInContainer.Stretch
+                              CorSLA: =CorSLA(Text(gblOcorrenciaCriada.'Situação do SLA'))
+                              CorStatus: =CorStatus(Text(gblOcorrenciaCriada.'Status (nc_status)'))
+                              Height: =148
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Motivo: =gblOcorrenciaCriada.Motivo.'Motivo (nc_name)'
+                              Pedido: ="Pedido " & gblOcorrenciaCriada.Pedido.'Número do pedido'
+                              Protocolo: =gblOcorrenciaCriada.Protocolo
+                              SituacaoSLA: =Coalesce(Text(gblOcorrenciaCriada.'Situação do SLA'), "Calculando SLA")
+                              Status: =Text(gblOcorrenciaCriada.'Status (nc_status)')
+                  - conConPrazos:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =CorBorda
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.None
+                        Fill: =CorSuperficie
+                        FillPortions: =0
+                        Height: =212
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =14
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =14
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblConPrazosTitulo:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTexto
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Bold
+                              Height: =24
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: ="Prazos do atendimento"
+                              Wrap: =false
+                        - conConLinPrioridade:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =32
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - lblConPrioridade:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTextoSuave
+                                    FillPortions: =1
+                                    Font: =FonteNC
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: ="Prioridade"
+                                    Wrap: =false
+                              - conConSeloPrioridadeBox:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: =28
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutJustifyContent: =LayoutJustifyContent.End
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =128
+                                  Children:
+                                    - cmpConSeloPrioridade:
+                                        Control: CanvasComponent
+                                        ComponentName: cmpSeloStatus
+                                        Properties:
+                                          Cor: =CorPrioridade(Text(gblOcorrenciaCriada.Prioridade))
+                                          Height: =28
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Texto: =Coalesce(Text(gblOcorrenciaCriada.Prioridade), "A definir")
+                                          Width: =128
+                        - conConLinResposta:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =32
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - lblConRespostaRotulo:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTextoSuave
+                                    FillPortions: =1
+                                    Font: =FonteNC
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: ="Primeira resposta até"
+                                    Wrap: =false
+                              - lblConResposta:
+                                  Control: ModernText
+                                  Properties:
+                                    Align: =Align.Right
+                                    Color: =CorTexto
+                                    Font: =FonteNC
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: =Coalesce(gblProtocolo.prazoresposta, Text(gblOcorrenciaCriada.'Prazo da primeira resposta', "dd/mm/yyyy hh:mm"), "Em cálculo")
+                                    Wrap: =false
+                        - conConLinSolucao:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =32
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - lblConSolucaoRotulo:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTextoSuave
+                                    FillPortions: =1
+                                    Font: =FonteNC
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: ="Solução até"
+                                    Wrap: =false
+                              - lblConSolucao:
+                                  Control: ModernText
+                                  Properties:
+                                    Align: =Align.Right
+                                    Color: =CorTexto
+                                    Font: =FonteNC
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: =Coalesce(gblProtocolo.prazosolucao, Text(gblOcorrenciaCriada.'Prazo de solução', "dd/mm/yyyy hh:mm"), "Em cálculo")
+                                    Wrap: =false
+                        - conConLinEmail:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =32
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - lblConEmailRotulo:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTextoSuave
+                                    FillPortions: =1
+                                    Font: =FonteNC
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: ="Comprovante por e-mail"
+                                    Wrap: =false
+                              - lblConEmail:
+                                  Control: ModernText
+                                  Properties:
+                                    Align: =Align.Right
+                                    Color: =CorTexto
+                                    Font: =FonteNC
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: =If(gblProtocolo.emailenviado = "sim", "Enviado ao contato", "Sem e-mail de contato")
+                                    Width: =220
+                                    Wrap: =false
+                  - btnConVer:
+                      Control: ModernButton
+                      Properties:
+                        AccessibleLabel: ="Ver o detalhe da ocorrência registrada"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        BasePaletteColor: =CorPrimaria
+                        Font: =FonteNC
+                        FontWeight: =FontWeight.Semibold
+                        Height: =52
+                        Icon: ="Open"
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =Set(gblOcorrenciaSel, gblOcorrenciaCriada);
+                          Navigate(scrDetalhe, ScreenTransition.Cover)
+                        Size: =15
+                        Text: ="Ver ocorrência"
+                  - btnConInicio:
+                      Control: ModernButton
+                      Properties:
+                        AccessibleLabel: ="Voltar para a lista de ocorrências"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Outline
+                        BasePaletteColor: =CorPrimaria
+                        Color: =CorPrimaria
+                        Font: =FonteNC
+                        Height: =52
+                        Icon: ="Home"
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =Set(gblPedido, Blank());
+                          Set(gblMotivo, Blank());
+                          Set(gblFoto, "");
+                          Set(gblPasso, 1);
+                          Refresh(Ocorrências);
+                          Navigate(Screen1, ScreenTransition.UnCover)
+                        Size: =15
+                        Text: ="Voltar ao início"

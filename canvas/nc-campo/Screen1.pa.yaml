@@ -1,0 +1,369 @@
+Screens:
+  Screen1:
+    Properties:
+      Fill: =CorFundo
+    Children:
+      - conIniRaiz:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =CorFundo
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Width: =Parent.Width
+          Children:
+            - cmpIniCabecalho:
+                Control: CanvasComponent
+                ComponentName: cmpCabecalho
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Height: =96
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Subtitulo: ="Olá, " & Coalesce(UsuarioAtual.Nome, User().FullName)
+                  Titulo: ="Minhas ocorrências"
+            - conIniAcoes:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =80
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutJustifyContent: =LayoutJustifyContent.Center
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =8
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                Children:
+                  - btnIniNova:
+                      Control: ModernButton
+                      Properties:
+                        AccessibleLabel: ="Abrir uma nova ocorrência"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        BasePaletteColor: =CorPrimaria
+                        Font: =FonteNC
+                        FontWeight: =FontWeight.Semibold
+                        Height: =52
+                        Icon: ="Add"
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =Set(gblPasso, 1);
+                          Set(gblPedido, Blank());
+                          Set(gblMotivo, Blank());
+                          Set(gblFoto, "");
+                          Set(gblLatitude, Blank());
+                          Set(gblLongitude, Blank());
+                          Set(gblEnviando, false);
+                          Navigate(scrNovaOcorrencia, ScreenTransition.Cover)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =16
+                        Text: ="Nova ocorrência"
+            - conIniTituloLista:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =48
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                Children:
+                  - lblIniLista:
+                      Control: ModernText
+                      Properties:
+                        Color: =CorTexto
+                        FillPortions: =1
+                        Font: =FonteNC
+                        FontWeight: =FontWeight.Bold
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingLeft: =0
+                        Size: =18
+                        Text: ="Suas ocorrências"
+                        Wrap: =false
+                  - btnIniAtualizar:
+                      Control: ModernButton
+                      Properties:
+                        AccessibleLabel: ="Atualizar a lista de ocorrências"
+                        Appearance: =ButtonAppearance.Subtle
+                        Color: =CorPrimaria
+                        Font: =FonteNC
+                        Height: =40
+                        Icon: ="ArrowSync"
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =Refresh(Ocorrências)
+                        Size: =14
+                        Text: ="Atualizar"
+                        Width: =132
+            - conIniVazio:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =120
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutJustifyContent: =LayoutJustifyContent.Center
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  Visible: =IsEmpty(MinhasOcorrencias)
+                Children:
+                  - lblIniVazio:
+                      Control: ModernText
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =CorBorda
+                        BorderThickness: =1
+                        Color: =CorTextoSuave
+                        Fill: =CorSuperficie
+                        Font: =FonteNC
+                        Height: =96
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                        Size: =15
+                        Text: ="Você ainda não abriu ocorrências. Toque em Nova ocorrência para registrar a primeira."
+            - galIniOcorrencias:
+                Control: Gallery
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Lista das suas ocorrências"
+                  Items: =MinhasOcorrencias
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  ShowScrollbar: =false
+                  TabIndex: =0
+                  TemplatePadding: =0
+                  TemplateSize: =140
+                  Visible: =!IsEmpty(MinhasOcorrencias)
+                Children:
+                  - conIniLinha:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.TemplateHeight
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        PaddingBottom: =6
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =6
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - conIniCard:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =CorBorda
+                              BorderThickness: =1
+                              Fill: =CorSuperficie
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              RadiusBottomLeft: =12
+                              RadiusBottomRight: =12
+                              RadiusTopLeft: =12
+                              RadiusTopRight: =12
+                            Children:
+                              - conIniFaixa:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    Fill: =CorSLA(Text(ThisItem.'Situação do SLA'))
+                                    FillPortions: =0
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    RadiusBottomLeft: =12
+                                    RadiusBottomRight: =0
+                                    RadiusTopLeft: =12
+                                    RadiusTopRight: =0
+                                    Width: =6
+                              - conIniCorpo:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutGap: =4
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =10
+                                    PaddingLeft: =14
+                                    PaddingRight: =14
+                                    PaddingTop: =10
+                                  Children:
+                                    - conIniLinha1:
+                                        Control: GroupContainer
+                                        Variant: AutoLayout
+                                        Properties:
+                                          DropShadow: =DropShadow.None
+                                          FillPortions: =0
+                                          Height: =26
+                                          LayoutAlignItems: =LayoutAlignItems.Center
+                                          LayoutDirection: =LayoutDirection.Horizontal
+                                          LayoutGap: =8
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                        Children:
+                                          - lblIniProtocolo:
+                                              Control: ModernText
+                                              Properties:
+                                                Color: =CorPrimaria
+                                                FillPortions: =1
+                                                Font: =FonteNC
+                                                FontWeight: =FontWeight.Bold
+                                                Height: =26
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingLeft: =0
+                                                PaddingTop: =0
+                                                Size: =18
+                                                Text: =ThisItem.Protocolo
+                                                Wrap: =false
+                                          - lblIniAbertura:
+                                              Control: ModernText
+                                              Properties:
+                                                Align: =Align.Right
+                                                Color: =CorTextoSuave
+                                                Font: =FonteNC
+                                                Height: =20
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingRight: =0
+                                                PaddingTop: =0
+                                                Size: =12
+                                                Text: =Text(ThisItem.'Data de Criação', "dd/mm/yyyy hh:mm")
+                                                Width: =130
+                                                Wrap: =false
+                                    - lblIniMotivo:
+                                        Control: ModernText
+                                        Properties:
+                                          Color: =CorTexto
+                                          Font: =FonteNC
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =22
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingTop: =0
+                                          Size: =15
+                                          Text: =ThisItem.Motivo.'Motivo (nc_name)'
+                                          Wrap: =false
+                                    - lblIniPedido:
+                                        Control: ModernText
+                                        Properties:
+                                          Color: =CorTextoSuave
+                                          Font: =FonteNC
+                                          Height: =18
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingTop: =0
+                                          Size: =12
+                                          Text: ="Pedido " & ThisItem.Pedido.'Número do pedido'
+                                          Wrap: =false
+                                    - conIniSelos:
+                                        Control: GroupContainer
+                                        Variant: AutoLayout
+                                        Properties:
+                                          DropShadow: =DropShadow.None
+                                          FillPortions: =0
+                                          Height: =30
+                                          LayoutAlignItems: =LayoutAlignItems.Center
+                                          LayoutDirection: =LayoutDirection.Horizontal
+                                          LayoutGap: =8
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                        Children:
+                                          - lblIniStatus:
+                                              Control: ModernText
+                                              Properties:
+                                                Align: =Align.Center
+                                                Color: =ColorFade(CorStatus(Text(ThisItem.'Status (nc_status)')), -30%)
+                                                Fill: =ColorFade(CorStatus(Text(ThisItem.'Status (nc_status)')), 82%)
+                                                Font: =FonteNC
+                                                FontWeight: =FontWeight.Semibold
+                                                Height: =28
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingTop: =0
+                                                RadiusBottomLeft: =14
+                                                RadiusBottomRight: =14
+                                                RadiusTopLeft: =14
+                                                RadiusTopRight: =14
+                                                Size: =12
+                                                Text: =Text(ThisItem.'Status (nc_status)')
+                                                Width: =168
+                                                Wrap: =false
+                                          - lblIniSLA:
+                                              Control: ModernText
+                                              Properties:
+                                                Align: =Align.Center
+                                                Color: =ColorFade(CorSLA(Text(ThisItem.'Situação do SLA')), -30%)
+                                                Fill: =ColorFade(CorSLA(Text(ThisItem.'Situação do SLA')), 82%)
+                                                Font: =FonteNC
+                                                FontWeight: =FontWeight.Semibold
+                                                Height: =28
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingTop: =0
+                                                RadiusBottomLeft: =14
+                                                RadiusBottomRight: =14
+                                                RadiusTopLeft: =14
+                                                RadiusTopRight: =14
+                                                Size: =12
+                                                Text: =Coalesce(Text(ThisItem.'Situação do SLA'), "Calculando SLA")
+                                                Width: =140
+                                                Wrap: =false
+                  - btnIniAbrir:
+                      Control: ModernButton
+                      Properties:
+                        AccessibleLabel: ="Abrir a ocorrência " & ThisItem.Protocolo
+                        Appearance: =ButtonAppearance.Transparent
+                        Height: =Parent.TemplateHeight
+                        Layout: =ButtonLayout.TextOnly
+                        OnSelect: |-
+                          =Set(gblOcorrenciaSel, ThisItem);
+                          Navigate(scrDetalhe, ScreenTransition.Cover)
+                        Text: =""
+                        Width: =Parent.TemplateWidth

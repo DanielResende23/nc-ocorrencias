@@ -1,0 +1,998 @@
+Screens:
+  scrNovaOcorrencia:
+    Properties:
+      Fill: =CorFundo
+      OnVisible: |-
+        =UpdateContext({locCameraAberta: false});
+        If(
+          gblPasso = 1 && IsBlank(gblPedido),
+          Reset(txtNovBusca);
+          Reset(txtNovDescricao);
+          Reset(addNovImagem)
+        )
+    Children:
+      - conNovRaiz:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =CorFundo
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Width: =Parent.Width
+          Children:
+            - conNovTopo:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =CorPrimaria
+                  FillPortions: =0
+                  Height: =96
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingLeft: =8
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                Children:
+                  - btnNovVoltar:
+                      Control: ModernButton
+                      Properties:
+                        AccessibleLabel: ="Voltar"
+                        Appearance: =ButtonAppearance.Transparent
+                        Color: =RGBA(255, 255, 255, 1)
+                        Height: =48
+                        Icon: ="ArrowLeft"
+                        Layout: =ButtonLayout.IconOnly
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(gblPasso > 1, Set(gblPasso, gblPasso - 1), Back())
+                        Text: ="Voltar"
+                        Width: =48
+                  - cmpNovCabecalho:
+                      Control: CanvasComponent
+                      ComponentName: cmpCabecalho
+                      Properties:
+                        FillPortions: =1
+                        Height: =96
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Subtitulo: ="Passo " & gblPasso & " de 3"
+                        Titulo: ="Nova ocorrência"
+            - conNovPassos:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =CorSuperficie
+                  FillPortions: =0
+                  Height: =56
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =10
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =10
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                Children:
+                  - lblNovPasso1:
+                      Control: ModernText
+                      Properties:
+                        Align: =Align.Center
+                        Color: =If(gblPasso = 1, RGBA(255, 255, 255, 1), CorPrimaria)
+                        Fill: =If(gblPasso = 1, CorPrimaria, CorTint)
+                        FillPortions: =1
+                        Font: =FonteNC
+                        FontWeight: =FontWeight.Semibold
+                        Height: =34
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        RadiusBottomLeft: =17
+                        RadiusBottomRight: =17
+                        RadiusTopLeft: =17
+                        RadiusTopRight: =17
+                        Size: =13
+                        Text: ="1 · Pedido"
+                        Wrap: =false
+                  - lblNovPasso2:
+                      Control: ModernText
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =CorBorda
+                        BorderThickness: =If(gblPasso < 2, 1, 0)
+                        Color: =If(gblPasso = 2, RGBA(255, 255, 255, 1), gblPasso > 2, CorPrimaria, CorTextoSuave)
+                        Fill: =If(gblPasso = 2, CorPrimaria, gblPasso > 2, CorTint, CorSuperficie)
+                        FillPortions: =1
+                        Font: =FonteNC
+                        FontWeight: =FontWeight.Semibold
+                        Height: =34
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        RadiusBottomLeft: =17
+                        RadiusBottomRight: =17
+                        RadiusTopLeft: =17
+                        RadiusTopRight: =17
+                        Size: =13
+                        Text: ="2 · Motivo"
+                        Wrap: =false
+                  - lblNovPasso3:
+                      Control: ModernText
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =CorBorda
+                        BorderThickness: =If(gblPasso < 3, 1, 0)
+                        Color: =If(gblPasso = 3, RGBA(255, 255, 255, 1), CorTextoSuave)
+                        Fill: =If(gblPasso = 3, CorPrimaria, CorSuperficie)
+                        FillPortions: =1
+                        Font: =FonteNC
+                        FontWeight: =FontWeight.Semibold
+                        Height: =34
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        RadiusBottomLeft: =17
+                        RadiusBottomRight: =17
+                        RadiusTopLeft: =17
+                        RadiusTopRight: =17
+                        Size: =13
+                        Text: ="3 · Evidência"
+                        Wrap: =false
+            - conNovCorpo:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =12
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =16
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                Children:
+                  - conNovPasso1:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =If(IsBlank(gblPedido), 456, 618)
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =12
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Visible: =gblPasso = 1
+                      Children:
+                        - lblNovLeitura:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTexto
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Semibold
+                              Height: =22
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =15
+                              Text: ="Leia o código de barras do pedido"
+                              Wrap: =false
+                        - brcNovLeitor:
+                            Control: BarcodeReader
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              BorderFillColor: =CorPrimaria
+                              FillColor: =CorPrimaria
+                              FontSize: =16
+                              Height: =56
+                              HoverBorderColor: =CorPrimariaEscura
+                              HoverFillColor: =CorPrimariaEscura
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnScan: |-
+                                =With(
+                                  {codigo: Trim(First(Self.Barcodes.Value).Value)},
+                                  Set(gblPedido, LookUp(Pedidos, 'Código de rastreio' = codigo));
+                                  If(
+                                    IsBlank(gblPedido),
+                                    Notify("Nenhum pedido com o rastreio " & codigo & ".", NotificationType.Error),
+                                    Notify("Pedido " & gblPedido.'Número do pedido' & " encontrado.", NotificationType.Success)
+                                  )
+                                )
+                              PressedBorderColor: =CorPrimariaEscura
+                              PressedContentColor: =RGBA(255, 255, 255, 1)
+                              PressedFillColor: =CorPrimariaEscura
+                              Text: ="Ler código de barras"
+                              Tooltip: ="Aponte a câmera para o código de rastreio do pedido"
+                        - lblNovBusca:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTexto
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Semibold
+                              Height: =22
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =15
+                              Text: ="Ou busque pelo número ou rastreio"
+                              Wrap: =false
+                        - txtNovBusca:
+                            Control: ModernTextInput
+                            Properties:
+                              AccessibleLabel: ="Buscar pedido pelo número ou pelo rastreio"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =Appearance.Outline
+                              Font: =FonteNC
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Placeholder: ="PED-000101 ou NC2611000101"
+                              Size: =15
+                              TriggerOutput: =TriggerOutput.Delayed
+                              Type: =TextInputType.Search
+                        - lblNovDica:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTextoSuave
+                              Font: =FonteNC
+                              Height: =18
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =12
+                              Text: =If(Len(Trim(txtNovBusca.Text)) < 3, "Digite ao menos 3 caracteres.", "Toque no pedido para selecionar.")
+                              Wrap: =false
+                        - galNovPedidos:
+                            Control: Gallery
+                            Variant: Vertical
+                            Properties:
+                              AccessibleLabel: ="Pedidos encontrados"
+                              FillPortions: =0
+                              Height: =230
+                              Items: |-
+                                =If(
+                                  Len(Trim(txtNovBusca.Text)) >= 3,
+                                  Sort(
+                                    Filter(
+                                      Pedidos,
+                                      StartsWith('Número do pedido', Trim(txtNovBusca.Text)) || StartsWith('Código de rastreio', Trim(txtNovBusca.Text))
+                                    ),
+                                    'Número do pedido',
+                                    SortOrder.Ascending
+                                  ),
+                                  Filter(Pedidos, IsBlank(Pedido))
+                                )
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              TabIndex: =0
+                              TemplatePadding: =0
+                              TemplateSize: =80
+                            Children:
+                              - conNovPedLinha:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    Height: =Parent.TemplateHeight
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    PaddingBottom: =3
+                                    PaddingTop: =3
+                                    Width: =Parent.TemplateWidth
+                                  Children:
+                                    - conNovPedCard:
+                                        Control: GroupContainer
+                                        Variant: AutoLayout
+                                        Properties:
+                                          BorderColor: =If(ThisItem.Pedido = gblPedido.Pedido, CorPrimaria, CorBorda)
+                                          BorderThickness: =1
+                                          DropShadow: =DropShadow.None
+                                          Fill: =If(ThisItem.Pedido = gblPedido.Pedido, CorTint, CorSuperficie)
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutDirection: =LayoutDirection.Vertical
+                                          LayoutGap: =2
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =6
+                                          PaddingLeft: =12
+                                          PaddingRight: =12
+                                          PaddingTop: =6
+                                          RadiusBottomLeft: =10
+                                          RadiusBottomRight: =10
+                                          RadiusTopLeft: =10
+                                          RadiusTopRight: =10
+                                        Children:
+                                          - lblNovPedNumero:
+                                              Control: ModernText
+                                              Properties:
+                                                Color: =CorPrimaria
+                                                Font: =FonteNC
+                                                FontWeight: =FontWeight.Bold
+                                                Height: =22
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingLeft: =0
+                                                PaddingTop: =0
+                                                Size: =15
+                                                Text: =ThisItem.'Número do pedido'
+                                                Wrap: =false
+                                          - lblNovPedInfo:
+                                              Control: ModernText
+                                              Properties:
+                                                Color: =CorTexto
+                                                Font: =FonteNC
+                                                Height: =18
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingLeft: =0
+                                                PaddingTop: =0
+                                                Size: =12
+                                                Text: =ThisItem.'Código de rastreio' & " · " & ThisItem.'Cidade de destino' & "/" & ThisItem.'UF de destino'
+                                                Wrap: =false
+                                          - lblNovPedCliente:
+                                              Control: ModernText
+                                              Properties:
+                                                Color: =CorTextoSuave
+                                                Font: =FonteNC
+                                                Height: =18
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingLeft: =0
+                                                PaddingTop: =0
+                                                Size: =12
+                                                Text: =ThisItem.Cliente.'Nome da Conta'
+                                                Wrap: =false
+                              - btnNovPedSelecionar:
+                                  Control: ModernButton
+                                  Properties:
+                                    AccessibleLabel: ="Selecionar o pedido " & ThisItem.'Número do pedido'
+                                    Appearance: =ButtonAppearance.Transparent
+                                    Height: =Parent.TemplateHeight
+                                    Layout: =ButtonLayout.TextOnly
+                                    OnSelect: =Set(gblPedido, ThisItem)
+                                    Text: =""
+                                    Width: =Parent.TemplateWidth
+                        - conNovPedidoSel:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =CorDestaque
+                              BorderThickness: =1
+                              DropShadow: =DropShadow.None
+                              Fill: =CorTint
+                              FillPortions: =0
+                              Height: =150
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =4
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =14
+                              PaddingLeft: =14
+                              PaddingRight: =14
+                              PaddingTop: =14
+                              RadiusBottomLeft: =12
+                              RadiusBottomRight: =12
+                              RadiusTopLeft: =12
+                              RadiusTopRight: =12
+                              Visible: =!IsBlank(gblPedido)
+                            Children:
+                              - lblNovSelTitulo:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorPrimaria
+                                    Font: =FonteNC
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =18
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =12
+                                    Text: ="Pedido selecionado"
+                                    Wrap: =false
+                              - lblNovSelNumero:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTexto
+                                    Font: =FonteNC
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =20
+                                    Text: =gblPedido.'Número do pedido'
+                                    Wrap: =false
+                              - lblNovSelRastreio:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTexto
+                                    Font: =FonteNC
+                                    Height: =20
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =13
+                                    Text: ="Rastreio " & gblPedido.'Código de rastreio'
+                                    Wrap: =false
+                              - lblNovSelCliente:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTexto
+                                    Font: =FonteNC
+                                    Height: =20
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =13
+                                    Text: =gblPedido.Cliente.'Nome da Conta'
+                                    Wrap: =false
+                              - lblNovSelDestino:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTextoSuave
+                                    Font: =FonteNC
+                                    Height: =20
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =12
+                                    Text: =gblPedido.'Cidade de destino' & "/" & gblPedido.'UF de destino' & " · " & Text(gblPedido.'Status do pedido') & " · previsto " & Text(gblPedido.'Entrega prevista', "dd/mm/yyyy")
+                                    Wrap: =false
+                  - conNovPasso2:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =634
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =12
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Visible: =gblPasso = 2
+                      Children:
+                        - lblNovMotivoTitulo:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTexto
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Semibold
+                              Height: =22
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =15
+                              Text: ="Qual é o motivo da ocorrência?"
+                              Wrap: =false
+                        - galNovMotivos:
+                            Control: Gallery
+                            Variant: Vertical
+                            Properties:
+                              AccessibleLabel: ="Motivos da ocorrência"
+                              FillPortions: =0
+                              Height: =600
+                              Items: =colMotivos
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              TabIndex: =0
+                              TemplatePadding: =0
+                              TemplateSize: =84
+                            Children:
+                              - conNovMotLinha:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    Height: =Parent.TemplateHeight
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    PaddingBottom: =3
+                                    PaddingTop: =3
+                                    Width: =Parent.TemplateWidth
+                                  Children:
+                                    - conNovMotCard:
+                                        Control: GroupContainer
+                                        Variant: AutoLayout
+                                        Properties:
+                                          BorderColor: =If(ThisItem.'Motivo (nc_motivoid)' = gblMotivo.'Motivo (nc_motivoid)', CorPrimaria, CorBorda)
+                                          BorderThickness: =If(ThisItem.'Motivo (nc_motivoid)' = gblMotivo.'Motivo (nc_motivoid)', 2, 1)
+                                          DropShadow: =DropShadow.None
+                                          Fill: =If(ThisItem.'Motivo (nc_motivoid)' = gblMotivo.'Motivo (nc_motivoid)', CorTint, CorSuperficie)
+                                          LayoutAlignItems: =LayoutAlignItems.Center
+                                          LayoutDirection: =LayoutDirection.Horizontal
+                                          LayoutGap: =8
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingLeft: =12
+                                          PaddingRight: =12
+                                          RadiusBottomLeft: =10
+                                          RadiusBottomRight: =10
+                                          RadiusTopLeft: =10
+                                          RadiusTopRight: =10
+                                        Children:
+                                          - conNovMotTextos:
+                                              Control: GroupContainer
+                                              Variant: AutoLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                LayoutDirection: =LayoutDirection.Vertical
+                                                LayoutGap: =2
+                                                LayoutJustifyContent: =LayoutJustifyContent.Center
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                              Children:
+                                                - lblNovMotNome:
+                                                    Control: ModernText
+                                                    Properties:
+                                                      Color: =CorTexto
+                                                      Font: =FonteNC
+                                                      FontWeight: =FontWeight.Semibold
+                                                      Height: =22
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      PaddingBottom: =0
+                                                      PaddingLeft: =0
+                                                      PaddingTop: =0
+                                                      Size: =15
+                                                      Text: =ThisItem.'Motivo (nc_name)'
+                                                      Wrap: =false
+                                                - lblNovMotCategoria:
+                                                    Control: ModernText
+                                                    Properties:
+                                                      Color: =CorPrimaria
+                                                      Font: =FonteNC
+                                                      Height: =18
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      PaddingBottom: =0
+                                                      PaddingLeft: =0
+                                                      PaddingTop: =0
+                                                      Size: =12
+                                                      Text: =Text(ThisItem.Categoria)
+                                                      Wrap: =false
+                                                - lblNovMotSla:
+                                                    Control: ModernText
+                                                    Properties:
+                                                      Color: =CorTextoSuave
+                                                      Font: =FonteNC
+                                                      Height: =18
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      PaddingBottom: =0
+                                                      PaddingLeft: =0
+                                                      PaddingTop: =0
+                                                      Size: =12
+                                                      Text: ="Resposta em " & ThisItem.'SLA de primeira resposta (horas)' & " h · Solução em " & ThisItem.'SLA de solução (horas)' & " h"
+                                                      Wrap: =false
+                                          - icoNovMotCheck:
+                                              Control: ModernIcon
+                                              Properties:
+                                                AccessibleLabel: ="Motivo selecionado"
+                                                Height: =28
+                                                Icon: ="CheckmarkCircle"
+                                                IconColor: =CorPrimaria
+                                                IconStyle: =IconStyle.Filled
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Visible: =ThisItem.'Motivo (nc_motivoid)' = gblMotivo.'Motivo (nc_motivoid)'
+                                                Width: =28
+                              - btnNovMotSelecionar:
+                                  Control: ModernButton
+                                  Properties:
+                                    AccessibleLabel: ="Selecionar o motivo " & ThisItem.'Motivo (nc_name)'
+                                    Appearance: =ButtonAppearance.Transparent
+                                    Height: =Parent.TemplateHeight
+                                    Layout: =ButtonLayout.TextOnly
+                                    OnSelect: =Set(gblMotivo, ThisItem)
+                                    Text: =""
+                                    Width: =Parent.TemplateWidth
+                  - conNovPasso3:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =398 + If(locCameraAberta, 342, 0) + If(IsBlank(gblFoto), 0, 284)
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =12
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Visible: =gblPasso = 3
+                      Children:
+                        - lblNovResumo:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorPrimaria
+                              Fill: =CorTint
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Semibold
+                              Height: =40
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingLeft: =12
+                              PaddingRight: =12
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Size: =14
+                              Text: ="Pedido " & gblPedido.'Número do pedido' & " · " & gblMotivo.'Motivo (nc_name)'
+                              Wrap: =false
+                        - lblNovFotoTitulo:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTexto
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Semibold
+                              Height: =22
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =15
+                              Text: ="Foto da evidência (opcional)"
+                              Wrap: =false
+                        - conNovFotoAcoes:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =52
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =12
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - btnNovCamera:
+                                  Control: ModernButton
+                                  Properties:
+                                    AccessibleLabel: ="Abrir ou fechar a câmera"
+                                    Appearance: =ButtonAppearance.Outline
+                                    BasePaletteColor: =CorPrimaria
+                                    Color: =CorPrimaria
+                                    FillPortions: =1
+                                    Font: =FonteNC
+                                    Height: =52
+                                    Icon: ="Camera"
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =UpdateContext({locCameraAberta: !locCameraAberta})
+                                    Size: =14
+                                    Text: =If(locCameraAberta, "Fechar câmera", "Usar câmera")
+                              - addNovImagem:
+                                  Control: AddMedia
+                                  Properties:
+                                    AccessibleLabel: ="Adicionar uma imagem da galeria"
+                                    BorderColor: =CorPrimaria
+                                    BorderThickness: =1
+                                    ChangePictureText: ="Trocar imagem"
+                                    Color: =CorPrimaria
+                                    Fill: =CorSuperficie
+                                    FillPortions: =1
+                                    Height: =52
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnChange: =Set(gblFoto, Self.Media)
+                                    Size: =12
+                                    Text: ="Adicionar imagem"
+                        - camNovCamera:
+                            Control: Camera
+                            Properties:
+                              AccessibleLabel: ="Câmera. Toque na imagem para tirar a foto"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Camera: =-1
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: |-
+                                =Set(gblFoto, Self.Photo);
+                                UpdateContext({locCameraAberta: false})
+                              Visible: =locCameraAberta
+                        - lblNovCameraDica:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTextoSuave
+                              Font: =FonteNC
+                              Height: =18
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =12
+                              Text: ="Toque na imagem da câmera para tirar a foto."
+                              Visible: =locCameraAberta
+                              Wrap: =false
+                        - imgNovFoto:
+                            Control: Image
+                            Properties:
+                              AccessibleLabel: ="Foto da evidência"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Fill: =CorTint
+                              Height: =220
+                              Image: =gblFoto
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              RadiusBottomLeft: =10
+                              RadiusBottomRight: =10
+                              RadiusTopLeft: =10
+                              RadiusTopRight: =10
+                              Visible: =!IsBlank(gblFoto)
+                        - btnNovRemoverFoto:
+                            Control: ModernButton
+                            Properties:
+                              AccessibleLabel: ="Remover a foto"
+                              AlignInContainer: =AlignInContainer.Start
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: =CorCritica
+                              Font: =FonteNC
+                              Height: =40
+                              Icon: ="Delete"
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: |-
+                                =Set(gblFoto, "");
+                                Reset(addNovImagem)
+                              Size: =14
+                              Text: ="Remover foto"
+                              Visible: =!IsBlank(gblFoto)
+                              Width: =180
+                        - lblNovLocalTitulo:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTexto
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Semibold
+                              Height: =22
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =15
+                              Text: ="Localização"
+                              Wrap: =false
+                        - conNovLocal:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =48
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - lblNovCoordenadas:
+                                  Control: ModernText
+                                  Properties:
+                                    BorderColor: =CorBorda
+                                    BorderThickness: =1
+                                    Color: =CorTexto
+                                    Fill: =CorSuperficie
+                                    FillPortions: =1
+                                    Font: =FonteNC
+                                    Height: =44
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingLeft: =10
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =13
+                                    Text: =If(IsBlank(gblLatitude), "Localização não disponível", "Lat " & Text(gblLatitude, "0.000000") & " · Long " & Text(gblLongitude, "0.000000"))
+                                    Wrap: =false
+                              - btnNovLocal:
+                                  Control: ModernButton
+                                  Properties:
+                                    AccessibleLabel: ="Atualizar a localização"
+                                    Appearance: =ButtonAppearance.Subtle
+                                    Color: =CorPrimaria
+                                    Font: =FonteNC
+                                    Height: =44
+                                    Icon: ="Location"
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =Set(gblLatitude, Location.Latitude);
+                                      Set(gblLongitude, Location.Longitude)
+                                    Size: =14
+                                    Text: ="Atualizar"
+                                    Width: =140
+                        - lblNovDescTitulo:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTexto
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Semibold
+                              Height: =22
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =15
+                              Text: ="Descrição *"
+                              Wrap: =false
+                        - txtNovDescricao:
+                            Control: ModernTextInput
+                            Properties:
+                              AccessibleLabel: ="Descrição da ocorrência"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =Appearance.Outline
+                              Font: =FonteNC
+                              Height: =120
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              MaxLength: =2000
+                              Placeholder: ="Conte o que aconteceu na entrega"
+                              Size: =15
+                              Type: =TextInputType.Multiline
+            - conNovRodape:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.Regular
+                  Fill: =CorSuperficie
+                  FillPortions: =0
+                  Height: =80
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =12
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                Children:
+                  - spnNovEnviando:
+                      Control: ModernSpinner
+                      Properties:
+                        AccessibleLabel: ="Registrando a ocorrência"
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        SpinnerColor: =CorPrimaria
+                        Visible: =gblEnviando
+                        Width: =48
+                  - btnNovVoltarPasso:
+                      Control: ModernButton
+                      Properties:
+                        AccessibleLabel: ="Voltar ao passo anterior"
+                        Appearance: =ButtonAppearance.Outline
+                        BasePaletteColor: =CorPrimaria
+                        Color: =CorPrimaria
+                        DisplayMode: =If(gblEnviando, DisplayMode.Disabled, DisplayMode.Edit)
+                        FillPortions: =1
+                        Font: =FonteNC
+                        Height: =52
+                        Layout: =ButtonLayout.TextOnly
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =Set(gblPasso, gblPasso - 1)
+                        Size: =15
+                        Text: ="Voltar"
+                        Visible: =gblPasso > 1
+                  - btnNovAvancar:
+                      Control: ModernButton
+                      Properties:
+                        AccessibleLabel: =If(gblPasso < 3, "Continuar para o próximo passo", "Enviar a ocorrência")
+                        BasePaletteColor: =CorPrimaria
+                        DisplayMode: |-
+                          =If(
+                            gblEnviando
+                              || (gblPasso = 1 && IsBlank(gblPedido))
+                              || (gblPasso = 2 && IsBlank(gblMotivo))
+                              || (gblPasso = 3 && IsBlank(Trim(txtNovDescricao.Text))),
+                            DisplayMode.Disabled,
+                            DisplayMode.Edit
+                          )
+                        FillPortions: =2
+                        Font: =FonteNC
+                        FontWeight: =FontWeight.Semibold
+                        Height: =52
+                        Icon: =If(gblPasso < 3, "ArrowRight", "Send")
+                        Layout: =ButtonLayout.IconAfter
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =If(
+                            gblPasso = 1,
+                            Set(gblPasso, 2),
+                            gblPasso = 2,
+                            Set(gblPasso, 3);
+                            Set(gblLatitude, Location.Latitude);
+                            Set(gblLongitude, Location.Longitude),
+                            Set(gblEnviando, true);
+                            Set(gblProtocolo, Blank());
+                            IfError(
+                              Set(
+                                gblOcorrenciaCriada,
+                                Patch(
+                                  Ocorrências,
+                                  Defaults(Ocorrências),
+                                  {
+                                    'Canal de abertura': 'Canal de abertura (Ocorrências)'.'App de campo',
+                                    'Status (nc_status)': 'Status (Ocorrências)'.Aberta,
+                                    'ID de origem': "APP-" & GUID(),
+                                    Pedido: gblPedido,
+                                    Motivo: gblMotivo,
+                                    Descrição: Trim(txtNovDescricao.Text),
+                                    'Foto da evidência': If(IsBlank(gblFoto), Blank(), {Full: imgNovFoto.Image, Value: imgNovFoto.Image}),
+                                    Latitude: gblLatitude,
+                                    Longitude: gblLongitude
+                                  }
+                                )
+                              ),
+                              Set(gblEnviando, false);
+                              Notify("Não foi possível registrar a ocorrência. " & FirstError.Message, NotificationType.Error),
+                              IfError(
+                                Set(gblProtocolo, 'NC-App-Protocolo'.Run(Text(gblOcorrenciaCriada.Ocorrência))),
+                                Notify("A ocorrência foi salva, mas o fluxo de protocolo falhou. " & FirstError.Message, NotificationType.Warning)
+                              );
+                              Set(gblOcorrenciaCriada, LookUp(Ocorrências, Ocorrência = gblOcorrenciaCriada.Ocorrência));
+                              Set(gblEnviando, false);
+                              Notify("Ocorrência " & gblOcorrenciaCriada.Protocolo & " registrada.", NotificationType.Success);
+                              Navigate(scrConfirmacao, ScreenTransition.Cover)
+                            )
+                          )
+                        Size: =15
+                        Text: =If(gblEnviando, "Enviando…", gblPasso < 3, "Continuar", "Enviar ocorrência")

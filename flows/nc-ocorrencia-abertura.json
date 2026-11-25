@@ -1,0 +1,229 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "$connections": { "defaultValue": {}, "type": "Object" },
+    "$authentication": { "defaultValue": {}, "type": "SecureObject" }
+  },
+  "triggers": {
+    "Quando_uma_ocorrencia_e_criada": {
+      "type": "OpenApiConnectionWebhook",
+      "description": "Dispara quando uma ocorrência é criada por qualquer canal (app de campo, portal, central ou agente).",
+      "inputs": {
+        "host": {
+          "connectionName": "shared_commondataserviceforapps",
+          "operationId": "SubscribeWebhookTrigger",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+        },
+        "parameters": {
+          "subscriptionRequest/message": 1,
+          "subscriptionRequest/entityname": "nc_ocorrencia",
+          "subscriptionRequest/scope": 4
+        }
+      }
+    }
+  },
+  "actions": {
+    "Inicializar_SLA_de_resposta": {
+      "type": "InitializeVariable",
+      "description": "Padrão de 24 horas quando a ocorrência chega sem motivo.",
+      "inputs": { "variables": [ { "name": "varSlaResposta", "type": "integer", "value": 24 } ] },
+      "runAfter": {}
+    },
+    "Inicializar_SLA_de_solucao": {
+      "type": "InitializeVariable",
+      "description": "Padrão de 72 horas quando a ocorrência chega sem motivo.",
+      "inputs": { "variables": [ { "name": "varSlaSolucao", "type": "integer", "value": 72 } ] },
+      "runAfter": { "Inicializar_SLA_de_resposta": [ "Succeeded" ] }
+    },
+    "Inicializar_prioridade": {
+      "type": "InitializeVariable",
+      "description": "Prioridade calculada. Começa em Média (100000001) e vem do motivo; sobe para Crítica (100000003) quando o pedido passa de R$ 10 mil.",
+      "inputs": { "variables": [ { "name": "varPrioridade", "type": "integer", "value": 100000001 } ] },
+      "runAfter": { "Inicializar_SLA_de_solucao": [ "Succeeded" ] }
+    },
+    "Inicializar_cliente": {
+      "type": "InitializeVariable",
+      "inputs": { "variables": [ { "name": "varCliente", "type": "string", "value": "" } ] },
+      "runAfter": { "Inicializar_prioridade": [ "Succeeded" ] }
+    },
+    "Inicializar_transportadora": {
+      "type": "InitializeVariable",
+      "inputs": { "variables": [ { "name": "varTransportadora", "type": "string", "value": "" } ] },
+      "runAfter": { "Inicializar_cliente": [ "Succeeded" ] }
+    },
+    "Tem_motivo": {
+      "type": "If",
+      "description": "Lê os prazos de SLA e a prioridade padrão do motivo.",
+      "expression": { "and": [ { "not": { "equals": [ "@coalesce(triggerOutputs()?['body/_nc_motivoid_value'], '')", "" ] } } ] },
+      "actions": {
+        "Obter_motivo": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "nc_motivos",
+              "recordId": "@triggerOutputs()?['body/_nc_motivoid_value']",
+              "$select": "nc_slarespostahoras,nc_slasolucaohoras,nc_prioridadepadrao"
+            }
+          },
+          "runAfter": {}
+        },
+        "Usar_SLA_de_resposta_do_motivo": {
+          "type": "SetVariable",
+          "inputs": { "name": "varSlaResposta", "value": "@coalesce(outputs('Obter_motivo')?['body/nc_slarespostahoras'], 24)" },
+          "runAfter": { "Obter_motivo": [ "Succeeded" ] }
+        },
+        "Usar_SLA_de_solucao_do_motivo": {
+          "type": "SetVariable",
+          "inputs": { "name": "varSlaSolucao", "value": "@coalesce(outputs('Obter_motivo')?['body/nc_slasolucaohoras'], 72)" },
+          "runAfter": { "Usar_SLA_de_resposta_do_motivo": [ "Succeeded" ] }
+        },
+        "Usar_prioridade_do_motivo": {
+          "type": "SetVariable",
+          "inputs": { "name": "varPrioridade", "value": "@coalesce(outputs('Obter_motivo')?['body/nc_prioridadepadrao'], 100000001)" },
+          "runAfter": { "Usar_SLA_de_solucao_do_motivo": [ "Succeeded" ] }
+        }
+      },
+      "else": { "actions": {} },
+      "runAfter": { "Inicializar_transportadora": [ "Succeeded" ] }
+    },
+    "Tem_pedido": {
+      "type": "If",
+      "description": "Lê o pedido para aplicar a regra de valor e completar cliente e transportadora.",
+      "expression": { "and": [ { "not": { "equals": [ "@coalesce(triggerOutputs()?['body/_nc_pedidoid_value'], '')", "" ] } } ] },
+      "actions": {
+        "Obter_pedido": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "nc_pedidos",
+              "recordId": "@triggerOutputs()?['body/_nc_pedidoid_value']",
+              "$select": "nc_valor,_nc_clienteid_value,_nc_transportadoraid_value"
+            }
+          },
+          "runAfter": {}
+        },
+        "Guardar_cliente_do_pedido": {
+          "type": "SetVariable",
+          "inputs": { "name": "varCliente", "value": "@coalesce(outputs('Obter_pedido')?['body/_nc_clienteid_value'], '')" },
+          "runAfter": { "Obter_pedido": [ "Succeeded" ] }
+        },
+        "Guardar_transportadora_do_pedido": {
+          "type": "SetVariable",
+          "inputs": { "name": "varTransportadora", "value": "@coalesce(outputs('Obter_pedido')?['body/_nc_transportadoraid_value'], '')" },
+          "runAfter": { "Guardar_cliente_do_pedido": [ "Succeeded" ] }
+        },
+        "Pedido_acima_de_10_mil": {
+          "type": "If",
+          "expression": { "and": [ { "greater": [ "@float(coalesce(outputs('Obter_pedido')?['body/nc_valor'], 0))", 10000 ] } ] },
+          "actions": {
+            "Prioridade_critica": {
+              "type": "SetVariable",
+              "inputs": { "name": "varPrioridade", "value": 100000003 },
+              "runAfter": {}
+            }
+          },
+          "else": { "actions": {} },
+          "runAfter": { "Guardar_transportadora_do_pedido": [ "Succeeded" ] }
+        }
+      },
+      "else": { "actions": {} },
+      "runAfter": { "Tem_motivo": [ "Succeeded" ] }
+    },
+    "Calcular_prazo_de_resposta": {
+      "type": "Compose",
+      "inputs": "@addHours(triggerOutputs()?['body/createdon'], variables('varSlaResposta'))",
+      "runAfter": { "Tem_pedido": [ "Succeeded" ] }
+    },
+    "Calcular_prazo_de_solucao": {
+      "type": "Compose",
+      "inputs": "@addHours(triggerOutputs()?['body/createdon'], variables('varSlaSolucao'))",
+      "runAfter": { "Calcular_prazo_de_resposta": [ "Succeeded" ] }
+    },
+    "Atualizar_prazos_e_prioridade": {
+      "type": "OpenApiConnection",
+      "description": "Grava os prazos, a prioridade (a maior entre a informada e a calculada), a situação do SLA e o status inicial.",
+      "inputs": {
+        "host": {
+          "connectionName": "shared_commondataserviceforapps",
+          "operationId": "UpdateOnlyRecord",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+        },
+        "parameters": {
+          "entityName": "nc_ocorrencias",
+          "recordId": "@triggerOutputs()?['body/nc_ocorrenciaid']",
+          "item/nc_prazoresposta": "@outputs('Calcular_prazo_de_resposta')",
+          "item/nc_prazosolucao": "@outputs('Calcular_prazo_de_solucao')",
+          "item/nc_prioridade": "@max(int(coalesce(triggerOutputs()?['body/nc_prioridade'], 0)), variables('varPrioridade'))",
+          "item/nc_situacaosla": 100000000,
+          "item/nc_status": "@coalesce(triggerOutputs()?['body/nc_status'], 100000000)",
+          "item/nc_statusaprovacao": "@coalesce(triggerOutputs()?['body/nc_statusaprovacao'], 100000000)"
+        }
+      },
+      "runAfter": { "Calcular_prazo_de_solucao": [ "Succeeded" ] }
+    },
+    "Falta_cliente_ou_transportadora": {
+      "type": "If",
+      "description": "Completa cliente e transportadora a partir do pedido quando a ocorrência chegou sem eles.",
+      "expression": {
+        "and": [
+          { "equals": [ "@coalesce(triggerOutputs()?['body/_nc_clienteid_value'], '')", "" ] },
+          { "not": { "equals": [ "@variables('varCliente')", "" ] } },
+          { "not": { "equals": [ "@variables('varTransportadora')", "" ] } }
+        ]
+      },
+      "actions": {
+        "Preencher_cliente_e_transportadora": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "UpdateOnlyRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "nc_ocorrencias",
+              "recordId": "@triggerOutputs()?['body/nc_ocorrenciaid']",
+              "item/nc_ClienteId@odata.bind": "@concat('/accounts(', variables('varCliente'), ')')",
+              "item/nc_TransportadoraId@odata.bind": "@concat('/nc_transportadoras(', variables('varTransportadora'), ')')"
+            }
+          },
+          "runAfter": {}
+        }
+      },
+      "else": { "actions": {} },
+      "runAfter": { "Atualizar_prazos_e_prioridade": [ "Succeeded" ] }
+    },
+    "Registrar_abertura_no_historico": {
+      "type": "OpenApiConnection",
+      "description": "Cria a interação de sistema que aparece no histórico da ocorrência e no portal do cliente.",
+      "inputs": {
+        "host": {
+          "connectionName": "shared_commondataserviceforapps",
+          "operationId": "CreateRecord",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+        },
+        "parameters": {
+          "entityName": "nc_interacaos",
+          "item/nc_name": "@concat('Ocorrência ', triggerOutputs()?['body/nc_protocolo'], ' aberta')",
+          "item/nc_tipo": 100000003,
+          "item/nc_visivelcliente": true,
+          "item/nc_texto": "@concat('Recebemos a ocorrência ', triggerOutputs()?['body/nc_protocolo'], '. Prazo da primeira resposta: ', formatDateTime(convertFromUtc(outputs('Calcular_prazo_de_resposta'), 'E. South America Standard Time'), 'dd/MM/yyyy HH:mm'), '. Prazo de solução: ', formatDateTime(convertFromUtc(outputs('Calcular_prazo_de_solucao'), 'E. South America Standard Time'), 'dd/MM/yyyy HH:mm'), '.')",
+          "item/nc_OcorrenciaId@odata.bind": "@concat('/nc_ocorrencias(', triggerOutputs()?['body/nc_ocorrenciaid'], ')')"
+        }
+      },
+      "runAfter": { "Falta_cliente_ou_transportadora": [ "Succeeded" ] }
+    }
+  },
+  "outputs": {}
+}

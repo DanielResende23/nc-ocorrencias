@@ -1,0 +1,24 @@
+# Credenciais e configurações locais
+.env
+*.env
+secrets/
+
+# Python
+__pycache__/
+.venv/
+
+# Saídas temporárias da solution
+*.zip
+out/
+bin/
+obj/
+
+# Dados gerados localmente (o gerador recria)
+data/output/
+
+# Logs e cópias locais
+*.log
+*.bak
+
+# Prints originais, antes do recorte (as versões finais ficam em docs/prints)
+docs/prints/originais/

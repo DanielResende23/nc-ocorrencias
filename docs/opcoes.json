@@ -1,0 +1,54 @@
+{
+  "nc_ocorrencia.nc_status": {
+    "Aberta": 100000000,
+    "Em análise": 100000001,
+    "Aguardando aprovação": 100000002,
+    "Em tratativa": 100000003,
+    "Resolvida": 100000004,
+    "Cancelada": 100000005
+  },
+  "nc_ocorrencia.nc_situacaosla": {
+    "No prazo": 100000000,
+    "Em risco": 100000001,
+    "Estourado": 100000002,
+    "Cumprido": 100000003,
+    "Não cumprido": 100000004
+  },
+  "nc_ocorrencia.nc_prioridade": {
+    "Baixa": 100000000,
+    "Média": 100000001,
+    "Alta": 100000002,
+    "Crítica": 100000003
+  },
+  "nc_ocorrencia.nc_canal": {
+    "App de campo": 100000000,
+    "Portal do cliente": 100000001,
+    "Central": 100000002,
+    "Assistente Teams": 100000003
+  },
+  "nc_ocorrencia.nc_statusaprovacao": {
+    "Não necessária": 100000000,
+    "Pendente": 100000001,
+    "Aprovada": 100000002,
+    "Reprovada": 100000003
+  },
+  "nc_interacao.nc_tipo": {
+    "Comentário interno": 100000000,
+    "Resposta ao cliente": 100000001,
+    "Mudança de status": 100000002,
+    "Sistema": 100000003
+  },
+  "nc_motivo.nc_categoria": {
+    "Logística": 100000000,
+    "Produto": 100000001,
+    "Atendimento": 100000002,
+    "Financeiro": 100000003
+  },
+  "nc_pedido.nc_statuspedido": {
+    "Em separação": 100000000,
+    "Em trânsito": 100000001,
+    "Entregue": 100000002,
+    "Devolvido": 100000003,
+    "Cancelado": 100000004
+  }
+}

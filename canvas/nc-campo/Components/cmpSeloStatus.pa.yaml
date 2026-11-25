@@ -1,0 +1,43 @@
+ComponentDefinitions:
+  cmpSeloStatus:
+    DefinitionType: CanvasComponent
+    Description: Selo (pílula) de status do Grupo NC. Recebe o texto e a cor do status, da prioridade ou da situação do SLA.
+    CustomProperties:
+      Cor:
+        PropertyKind: Input
+        DisplayName: Cor
+        Description: Cor do status. O fundo usa a mesma cor clareada.
+        DataType: Color
+        Default: =RGBA(48, 133, 186, 1)
+      Texto:
+        PropertyKind: Input
+        DisplayName: Texto
+        Description: Texto exibido no selo.
+        DataType: Text
+        Default: ="Aberta"
+    Properties:
+      Height: =28
+      Width: =128
+    Children:
+      - lblSeloTexto:
+          Control: ModernText
+          Properties:
+            AccessibleLabel: =cmpSeloStatus.Texto
+            Align: =Align.Center
+            Color: =ColorFade(cmpSeloStatus.Cor, -30%)
+            Fill: =ColorFade(cmpSeloStatus.Cor, 82%)
+            Font: ="Poppins, 'Segoe UI', sans-serif"
+            FontWeight: =FontWeight.Semibold
+            Height: =Parent.Height
+            PaddingBottom: =0
+            PaddingLeft: =10
+            PaddingRight: =10
+            PaddingTop: =0
+            RadiusBottomLeft: =14
+            RadiusBottomRight: =14
+            RadiusTopLeft: =14
+            RadiusTopRight: =14
+            Size: =12
+            Text: =cmpSeloStatus.Texto
+            Width: =Parent.Width
+            Wrap: =false

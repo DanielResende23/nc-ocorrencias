@@ -1,0 +1,2411 @@
+{
+  "schemaVersion": 2,
+  "solution": {
+    "uniqueName": "NCOcorrencias",
+    "displayName": "NC Ocorrências",
+    "publisherPrefix": "nc",
+    "description": "Gestão de ocorrências de entrega e atendimento do Grupo NC (projeto de portfólio, dados fictícios)."
+  },
+  "app": {
+    "name": "NC Central",
+    "description": "Central de tratativa de ocorrências de entrega do Grupo NC: fila, SLA, aprovação de reembolso e indicadores.",
+    "aiDescription": "App da central de atendimento do Grupo NC para atendentes, supervisores e gestores: triar e tratar ocorrências de entrega e atendimento, responder ao cliente, acompanhar a fila e o SLA, acompanhar reembolsos aguardando aprovação e manter motivos e transportadoras. Não cobre a abertura em campo (app canvas NC Campo), o autoatendimento do cliente (Portal do Cliente em Power Pages) nem a decisão de aprovação de reembolso, que acontece no Teams pelo Power Automate.",
+    "newLook": true
+  },
+  "personas": [
+    {
+      "persona": "NC Atendente",
+      "jobs": [
+        {
+          "name": "Triar ocorrências novas",
+          "description": "Pegar as ocorrências sem responsável na fila, conferir o motivo e a prioridade e assumir a tratativa.",
+          "surfaces": [
+            "Novas ocorrências na fila",
+            "Ocorrência"
+          ],
+          "privileges": [
+            {
+              "entity": "nc_ocorrencia",
+              "access": [
+                "read",
+                "create",
+                "write",
+                "append",
+                "appendTo",
+                "assign"
+              ],
+              "scope": "businessUnit"
+            },
+            {
+              "entity": "nc_pedido",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "account",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "contact",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "nc_motivo",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "nc_transportadora",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            }
+          ]
+        },
+        {
+          "name": "Tratar e responder ao cliente",
+          "description": "Registrar interações, responder ao cliente, solicitar reembolso quando o motivo permitir e resolver a ocorrência.",
+          "surfaces": [
+            "Minhas ocorrências em aberto",
+            "Ocorrência",
+            "Nova interação"
+          ],
+          "privileges": [
+            {
+              "entity": "nc_ocorrencia",
+              "access": [
+                "read",
+                "write",
+                "append",
+                "appendTo"
+              ],
+              "scope": "businessUnit"
+            },
+            {
+              "entity": "nc_interacao",
+              "access": [
+                "read",
+                "create",
+                "write",
+                "append"
+              ],
+              "scope": "businessUnit"
+            },
+            {
+              "entity": "annotation",
+              "access": [
+                "read",
+                "create",
+                "write",
+                "append",
+                "appendTo"
+              ],
+              "scope": "user"
+            }
+          ]
+        },
+        {
+          "name": "Consultar pedido e cliente",
+          "description": "Ver os dados do pedido, da transportadora e do cliente para entender a ocorrência.",
+          "surfaces": [
+            "Pedidos recentes",
+            "Pedido"
+          ],
+          "privileges": [
+            {
+              "entity": "nc_pedido",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "account",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "contact",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "nc_motivo",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "nc_transportadora",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            }
+          ]
+        }
+      ],
+      "excludes": [
+        "Abrir ocorrência em campo: feito pelo app canvas NC Campo",
+        "Aprovar reembolso: decisão do supervisor ou do gestor no Teams"
+      ]
+    },
+    {
+      "persona": "NC Supervisor",
+      "jobs": [
+        {
+          "name": "Acompanhar a fila e o SLA",
+          "description": "Ver o que está sem responsável, em risco ou estourado e agir antes de o prazo vencer.",
+          "surfaces": [
+            "painel-central",
+            "SLA em risco ou estourado"
+          ],
+          "privileges": [
+            {
+              "entity": "nc_ocorrencia",
+              "access": [
+                "read",
+                "write",
+                "append",
+                "appendTo"
+              ],
+              "scope": "businessUnit"
+            },
+            {
+              "entity": "nc_interacao",
+              "access": [
+                "read",
+                "create",
+                "append"
+              ],
+              "scope": "businessUnit"
+            },
+            {
+              "entity": "nc_pedido",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "account",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "contact",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "nc_motivo",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "nc_transportadora",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "annotation",
+              "access": [
+                "read",
+                "create",
+                "write",
+                "append",
+                "appendTo"
+              ],
+              "scope": "user"
+            }
+          ]
+        },
+        {
+          "name": "Acompanhar reembolsos aguardando aprovação",
+          "description": "Ver as ocorrências paradas em aprovação e o resultado das aprovações já feitas.",
+          "surfaces": [
+            "Aguardando aprovação"
+          ],
+          "privileges": [
+            {
+              "entity": "nc_ocorrencia",
+              "access": [
+                "read"
+              ],
+              "scope": "businessUnit"
+            }
+          ]
+        },
+        {
+          "name": "Redistribuir ocorrências",
+          "description": "Reatribuir ocorrências entre os atendentes para equilibrar a fila.",
+          "surfaces": [
+            "Ocorrências em aberto"
+          ],
+          "privileges": [
+            {
+              "entity": "nc_ocorrencia",
+              "access": [
+                "read",
+                "write",
+                "assign",
+                "share"
+              ],
+              "scope": "businessUnit"
+            }
+          ]
+        }
+      ],
+      "excludes": [
+        "Decidir a aprovação de reembolso dentro do app: a decisão acontece no card do Teams"
+      ]
+    },
+    {
+      "persona": "NC Gestor",
+      "jobs": [
+        {
+          "name": "Acompanhar indicadores de ocorrências e SLA",
+          "description": "Ver volume, cumprimento de SLA, motivos, transportadoras e reembolsos para priorizar ações.",
+          "surfaces": [
+            "painel-central",
+            "Resolvidas no mês"
+          ],
+          "privileges": [
+            {
+              "entity": "nc_ocorrencia",
+              "access": [
+                "read",
+                "write",
+                "assign"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "nc_interacao",
+              "access": [
+                "read"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "nc_pedido",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "account",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "contact",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "nc_motivo",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "nc_transportadora",
+              "access": [
+                "read",
+                "appendTo"
+              ],
+              "scope": "organization"
+            }
+          ]
+        },
+        {
+          "name": "Manter motivos e transportadoras",
+          "description": "Cadastrar e ajustar motivos (com SLA e regra de reembolso) e transportadoras.",
+          "surfaces": [
+            "Motivos ativos",
+            "Motivo",
+            "Transportadoras ativas",
+            "Transportadora"
+          ],
+          "privileges": [
+            {
+              "entity": "nc_motivo",
+              "access": [
+                "read",
+                "create",
+                "write",
+                "delete",
+                "append",
+                "appendTo"
+              ],
+              "scope": "organization"
+            },
+            {
+              "entity": "nc_transportadora",
+              "access": [
+                "read",
+                "create",
+                "write",
+                "delete",
+                "append",
+                "appendTo"
+              ],
+              "scope": "organization"
+            }
+          ]
+        }
+      ],
+      "excludes": [
+        "Análise histórica detalhada: feita no relatório de Power BI"
+      ]
+    }
+  ],
+  "globalChoices": [
+    {
+      "name": "nc_prioridade",
+      "displayName": "Prioridade NC",
+      "description": "Escala de prioridade usada no motivo (prioridade padrão) e na ocorrência.",
+      "options": [
+        "Baixa",
+        "Média",
+        "Alta",
+        "Crítica"
+      ]
+    }
+  ],
+  "webResources": [
+    {
+      "name": "nc_ocorrencia_icon",
+      "displayName": "Ícone Ocorrência",
+      "type": "svg",
+      "content": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' fill-rule='evenodd' d='M12 2.5c.5 0 .96.27 1.2.7l9.1 16.2c.5.9-.15 2.1-1.2 2.1H2.9c-1.05 0-1.7-1.2-1.2-2.1L10.8 3.2c.24-.43.7-.7 1.2-.7Zm0 2.6L4.1 19.5h15.8L12 5.1ZM11 9h2v6h-2V9Zm0 7.5h2v2h-2v-2Z'/></svg>"
+    },
+    {
+      "name": "nc_pedido_icon",
+      "displayName": "Ícone Pedido",
+      "type": "svg",
+      "content": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' fill-rule='evenodd' d='M12 2l9 4.5v11L12 22l-9-4.5v-11L12 2Zm-7 6.3v8l6 3v-8l-6-3Zm8 3v8l6-3v-8l-6 3ZM6.3 7 12 9.8 17.7 7 12 4.2 6.3 7Z'/></svg>"
+    },
+    {
+      "name": "nc_transportadora_icon",
+      "displayName": "Ícone Transportadora",
+      "type": "svg",
+      "content": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M2 5h12v10H2V5Zm13 3h3.6L22 11.6V15h-7V8ZM6.5 19.5a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Zm11 0a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z'/></svg>"
+    },
+    {
+      "name": "nc_motivo_icon",
+      "displayName": "Ícone Motivo",
+      "type": "svg",
+      "content": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' fill-rule='evenodd' d='M3 3h8.6l9.4 9.4-8.6 8.6L3 11.6V3Zm4.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z'/></svg>"
+    },
+    {
+      "name": "nc_interacao_icon",
+      "displayName": "Ícone Interação",
+      "type": "svg",
+      "content": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M3 4h12a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H8l-4 3v-3H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm15 4h3a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1v3l-4-3h-6a1 1 0 0 1-1-1v-1h7a2 2 0 0 0 2-2V8Z'/></svg>"
+    },
+    {
+      "name": "nc_tema_grupo_nc",
+      "displayName": "Tema Grupo NC",
+      "type": "xml",
+      "content": "<CustomTheme basePaletteColor=\"#005979\" lockPrimary=\"true\" font=\"'Poppins', 'Segoe UI', sans-serif\"><AppHeaderColors background=\"#005979\" foreground=\"#FFFFFF\" backgroundHover=\"#014A66\" foregroundHover=\"#FFFFFF\" backgroundPressed=\"#003B52\" foregroundPressed=\"#FFFFFF\" backgroundSelected=\"#003B52\" foregroundSelected=\"#FFFFFF\" /></CustomTheme>",
+      "description": "Tema moderno do NC Central com a identidade do dashboard do Grupo NC: azul petróleo #005979 e fonte Poppins."
+    }
+  ],
+  "entities": [
+    {
+      "schemaName": "account",
+      "displayName": "Conta",
+      "existing": true,
+      "primaryAttribute": {
+        "schemaName": "name",
+        "displayName": "Nome da Conta"
+      },
+      "columns": []
+    },
+    {
+      "schemaName": "contact",
+      "displayName": "Contato",
+      "existing": true,
+      "primaryAttribute": {
+        "schemaName": "fullname",
+        "displayName": "Nome Completo"
+      },
+      "columns": []
+    },
+    {
+      "schemaName": "nc_transportadora",
+      "displayName": "Transportadora",
+      "pluralName": "Transportadoras",
+      "vectorIcon": "nc_transportadora_icon",
+      "iconDescription": "um caminhão de entrega visto de lado, com baú e cabine",
+      "description": "Transportadora parceira que entrega os pedidos do Grupo NC. O SLA contratual serve de referência para atrasos.",
+      "primaryAttribute": {
+        "schemaName": "nc_name",
+        "displayName": "Nome"
+      },
+      "columns": [
+        {
+          "schemaName": "nc_cnpj",
+          "displayName": "CNPJ",
+          "type": "Text",
+          "maxLength": 18,
+          "description": "CNPJ fictício da transportadora."
+        },
+        {
+          "schemaName": "nc_regiao",
+          "displayName": "Região de atuação",
+          "type": "Choice",
+          "options": [
+            "Sudeste",
+            "Sul",
+            "Centro-Oeste",
+            "Nordeste",
+            "Norte"
+          ],
+          "description": "Região principal onde a transportadora entrega."
+        },
+        {
+          "schemaName": "nc_slaentregadias",
+          "displayName": "SLA de entrega (dias)",
+          "type": "Integer",
+          "minValue": 1,
+          "maxValue": 60,
+          "description": "Prazo contratual de entrega, em dias corridos."
+        }
+      ]
+    },
+    {
+      "schemaName": "nc_pedido",
+      "displayName": "Pedido",
+      "pluralName": "Pedidos",
+      "vectorIcon": "nc_pedido_icon",
+      "iconDescription": "uma caixa de papelão fechada, em perspectiva",
+      "description": "Pedido de venda entregue por uma transportadora. É a origem de toda ocorrência.",
+      "primaryAttribute": {
+        "schemaName": "nc_numero",
+        "displayName": "Número do pedido",
+        "autoNumberFormat": "PED-{SEQNUM:6}"
+      },
+      "columns": [
+        {
+          "schemaName": "nc_statuspedido",
+          "displayName": "Status do pedido",
+          "type": "Choice",
+          "options": [
+            "Em separação",
+            "Em trânsito",
+            "Entregue",
+            "Devolvido",
+            "Cancelado"
+          ],
+          "description": "Situação logística do pedido."
+        },
+        {
+          "schemaName": "nc_datapedido",
+          "displayName": "Data do pedido",
+          "type": "DateTime",
+          "dateFormat": "DateOnly"
+        },
+        {
+          "schemaName": "nc_dataprevista",
+          "displayName": "Entrega prevista",
+          "type": "DateTime",
+          "dateFormat": "DateOnly",
+          "description": "Data prometida ao cliente; base para medir atraso."
+        },
+        {
+          "schemaName": "nc_dataentrega",
+          "displayName": "Entrega realizada",
+          "type": "DateTime",
+          "dateFormat": "DateOnly"
+        },
+        {
+          "schemaName": "nc_valor",
+          "displayName": "Valor do pedido",
+          "type": "Money",
+          "description": "Valor total do pedido. Acima de R$ 10 mil a ocorrência vira prioridade Crítica."
+        },
+        {
+          "schemaName": "nc_uf",
+          "displayName": "UF de destino",
+          "type": "Text",
+          "maxLength": 2
+        },
+        {
+          "schemaName": "nc_cidade",
+          "displayName": "Cidade de destino",
+          "type": "Text",
+          "maxLength": 100
+        },
+        {
+          "schemaName": "nc_rastreio",
+          "displayName": "Código de rastreio",
+          "type": "Text",
+          "maxLength": 40,
+          "description": "Código que o app de campo lê no código de barras da etiqueta."
+        }
+      ],
+      "alternateKeys": [
+        {
+          "schemaName": "nc_ak_pedido_rastreio",
+          "displayName": "Código de rastreio",
+          "columns": [
+            "nc_rastreio"
+          ]
+        }
+      ]
+    },
+    {
+      "schemaName": "nc_motivo",
+      "displayName": "Motivo",
+      "pluralName": "Motivos",
+      "vectorIcon": "nc_motivo_icon",
+      "iconDescription": "uma etiqueta de preço com um furo no canto",
+      "description": "Tabela de configuração dos motivos de ocorrência. Define os prazos de SLA, a prioridade padrão e se o motivo pode gerar reembolso.",
+      "primaryAttribute": {
+        "schemaName": "nc_name",
+        "displayName": "Motivo"
+      },
+      "columns": [
+        {
+          "schemaName": "nc_categoria",
+          "displayName": "Categoria",
+          "type": "Choice",
+          "options": [
+            "Logística",
+            "Produto",
+            "Atendimento",
+            "Financeiro"
+          ],
+          "description": "Agrupa os motivos para análise."
+        },
+        {
+          "schemaName": "nc_prioridadepadrao",
+          "displayName": "Prioridade padrão",
+          "type": "Choice",
+          "globalChoice": "nc_prioridade",
+          "description": "Prioridade aplicada na abertura; sobe para Crítica quando o pedido passa de R$ 10 mil."
+        },
+        {
+          "schemaName": "nc_slarespostahoras",
+          "displayName": "SLA de primeira resposta (horas)",
+          "type": "Integer",
+          "minValue": 1,
+          "maxValue": 720,
+          "description": "Horas para a primeira resposta ao cliente a partir da abertura."
+        },
+        {
+          "schemaName": "nc_slasolucaohoras",
+          "displayName": "SLA de solução (horas)",
+          "type": "Integer",
+          "minValue": 1,
+          "maxValue": 2160,
+          "description": "Horas para resolver a ocorrência a partir da abertura."
+        },
+        {
+          "schemaName": "nc_permitereembolso",
+          "displayName": "Pode gerar reembolso",
+          "type": "Boolean",
+          "trueLabel": "Sim",
+          "falseLabel": "Não",
+          "defaultValue": false,
+          "description": "Quando Sim, a ocorrência pode pedir reembolso e passa pelo fluxo de aprovação por alçada."
+        }
+      ]
+    },
+    {
+      "schemaName": "nc_ocorrencia",
+      "displayName": "Ocorrência",
+      "pluralName": "Ocorrências",
+      "hasNotes": true,
+      "vectorIcon": "nc_ocorrencia_icon",
+      "iconDescription": "um triângulo de alerta com um ponto de exclamação",
+      "description": "Ocorrência de entrega ou de atendimento ligada a um pedido, da abertura ao encerramento, com prazos de SLA, reembolso e avaliação do cliente.",
+      "primaryAttribute": {
+        "schemaName": "nc_protocolo",
+        "displayName": "Protocolo",
+        "autoNumberFormat": "OC-{SEQNUM:6}"
+      },
+      "columns": [
+        {
+          "schemaName": "nc_status",
+          "displayName": "Status",
+          "type": "Choice",
+          "options": [
+            "Aberta",
+            "Em análise",
+            "Aguardando aprovação",
+            "Em tratativa",
+            "Resolvida",
+            "Cancelada"
+          ],
+          "required": true,
+          "description": "Etapa da tratativa. Resolvida e Cancelada encerram a ocorrência."
+        },
+        {
+          "schemaName": "nc_prioridade",
+          "displayName": "Prioridade",
+          "type": "Choice",
+          "globalChoice": "nc_prioridade",
+          "description": "Vem do motivo na abertura; Crítica quando o pedido passa de R$ 10 mil."
+        },
+        {
+          "schemaName": "nc_canal",
+          "displayName": "Canal de abertura",
+          "type": "Choice",
+          "options": [
+            "App de campo",
+            "Portal do cliente",
+            "Central",
+            "Assistente Teams"
+          ],
+          "description": "Por onde a ocorrência entrou."
+        },
+        {
+          "schemaName": "nc_idorigem",
+          "displayName": "ID de origem",
+          "type": "Text",
+          "maxLength": 60,
+          "description": "Identificador da ocorrência no canal de abertura (app, portal, central ou agente). Chave única que evita duplicidade quando o mesmo envio chega duas vezes."
+        },
+        {
+          "schemaName": "nc_descricao",
+          "displayName": "Descrição",
+          "type": "Memo",
+          "required": true,
+          "description": "O que aconteceu, nas palavras de quem abriu."
+        },
+        {
+          "schemaName": "nc_situacaosla",
+          "displayName": "Situação do SLA",
+          "type": "Choice",
+          "options": [
+            "No prazo",
+            "Em risco",
+            "Estourado",
+            "Cumprido",
+            "Não cumprido"
+          ],
+          "description": "Atualizada pelo monitor de SLA: Em risco quando faltam menos de 20% do prazo."
+        },
+        {
+          "schemaName": "nc_prazoresposta",
+          "displayName": "Prazo da primeira resposta",
+          "type": "DateTime",
+          "dateFormat": "DateAndTime"
+        },
+        {
+          "schemaName": "nc_prazosolucao",
+          "displayName": "Prazo de solução",
+          "type": "DateTime",
+          "dateFormat": "DateAndTime"
+        },
+        {
+          "schemaName": "nc_dataprimeiraresposta",
+          "displayName": "Primeira resposta em",
+          "type": "DateTime",
+          "dateFormat": "DateAndTime"
+        },
+        {
+          "schemaName": "nc_dataresolucao",
+          "displayName": "Resolvida em",
+          "type": "DateTime",
+          "dateFormat": "DateAndTime"
+        },
+        {
+          "schemaName": "nc_solucao",
+          "displayName": "Solução aplicada",
+          "type": "Memo",
+          "description": "O que foi feito para resolver; enviado ao cliente na resolução."
+        },
+        {
+          "schemaName": "nc_valorreembolso",
+          "displayName": "Reembolso solicitado",
+          "type": "Money",
+          "description": "Valor pedido de reembolso; define a alçada de aprovação."
+        },
+        {
+          "schemaName": "nc_statusaprovacao",
+          "displayName": "Aprovação do reembolso",
+          "type": "Choice",
+          "options": [
+            "Não necessária",
+            "Pendente",
+            "Aprovada",
+            "Reprovada"
+          ],
+          "description": "Resultado da aprovação por alçada feita no Teams."
+        },
+        {
+          "schemaName": "nc_aprovador",
+          "displayName": "Aprovado por",
+          "type": "Text",
+          "maxLength": 150
+        },
+        {
+          "schemaName": "nc_comentarioaprovacao",
+          "displayName": "Comentário da aprovação",
+          "type": "Memo"
+        },
+        {
+          "schemaName": "nc_lancadolegado",
+          "displayName": "Lançado no legado",
+          "type": "Boolean",
+          "trueLabel": "Sim",
+          "falseLabel": "Não",
+          "defaultValue": false,
+          "description": "Marcado pelo RPA quando o crédito é lançado no sistema legado."
+        },
+        {
+          "schemaName": "nc_numerolancamento",
+          "displayName": "Nº do lançamento no legado",
+          "type": "Text",
+          "maxLength": 40
+        },
+        {
+          "schemaName": "nc_foto",
+          "displayName": "Foto da evidência",
+          "type": "Image",
+          "maxSizeKb": 10240,
+          "isPrimaryImage": true,
+          "description": "Foto tirada pelo app de campo."
+        },
+        {
+          "schemaName": "nc_latitude",
+          "displayName": "Latitude",
+          "type": "Decimal",
+          "precision": 6,
+          "minValue": -90,
+          "maxValue": 90
+        },
+        {
+          "schemaName": "nc_longitude",
+          "displayName": "Longitude",
+          "type": "Decimal",
+          "precision": 6,
+          "minValue": -180,
+          "maxValue": 180
+        },
+        {
+          "schemaName": "nc_csat",
+          "displayName": "Avaliação do cliente",
+          "type": "Integer",
+          "minValue": 1,
+          "maxValue": 5,
+          "visualization": "StarRating",
+          "description": "Nota de 1 a 5 dada pelo cliente no portal depois da resolução."
+        },
+        {
+          "schemaName": "nc_comentariocliente",
+          "displayName": "Comentário do cliente",
+          "type": "Memo"
+        }
+      ],
+      "alternateKeys": [
+        {
+          "schemaName": "nc_ak_ocorrencia_idorigem",
+          "displayName": "ID de origem",
+          "columns": [
+            "nc_idorigem"
+          ]
+        }
+      ]
+    },
+    {
+      "schemaName": "nc_interacao",
+      "displayName": "Interação",
+      "pluralName": "Interações",
+      "vectorIcon": "nc_interacao_icon",
+      "iconDescription": "dois balões de conversa sobrepostos",
+      "description": "Histórico da ocorrência: comentários internos, respostas ao cliente e registros automáticos. O portal mostra só o que for visível ao cliente.",
+      "primaryAttribute": {
+        "schemaName": "nc_name",
+        "displayName": "Resumo"
+      },
+      "columns": [
+        {
+          "schemaName": "nc_tipo",
+          "displayName": "Tipo",
+          "type": "Choice",
+          "options": [
+            "Comentário interno",
+            "Resposta ao cliente",
+            "Mudança de status",
+            "Sistema"
+          ]
+        },
+        {
+          "schemaName": "nc_texto",
+          "displayName": "Texto",
+          "type": "Memo"
+        },
+        {
+          "schemaName": "nc_visivelcliente",
+          "displayName": "Visível ao cliente",
+          "type": "Boolean",
+          "trueLabel": "Sim",
+          "falseLabel": "Não",
+          "defaultValue": false,
+          "description": "Quando Sim, aparece para o cliente no Portal."
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "OneToMany",
+      "referenced": "account",
+      "referencing": "nc_pedido",
+      "lookup": {
+        "schemaName": "nc_ClienteId",
+        "displayName": "Cliente"
+      }
+    },
+    {
+      "type": "OneToMany",
+      "referenced": "nc_transportadora",
+      "referencing": "nc_pedido",
+      "lookup": {
+        "schemaName": "nc_TransportadoraId",
+        "displayName": "Transportadora"
+      }
+    },
+    {
+      "type": "OneToMany",
+      "referenced": "nc_pedido",
+      "referencing": "nc_ocorrencia",
+      "lookup": {
+        "schemaName": "nc_PedidoId",
+        "displayName": "Pedido"
+      }
+    },
+    {
+      "type": "OneToMany",
+      "referenced": "account",
+      "referencing": "nc_ocorrencia",
+      "lookup": {
+        "schemaName": "nc_ClienteId",
+        "displayName": "Cliente"
+      }
+    },
+    {
+      "type": "OneToMany",
+      "referenced": "nc_transportadora",
+      "referencing": "nc_ocorrencia",
+      "lookup": {
+        "schemaName": "nc_TransportadoraId",
+        "displayName": "Transportadora"
+      }
+    },
+    {
+      "type": "OneToMany",
+      "referenced": "nc_motivo",
+      "referencing": "nc_ocorrencia",
+      "lookup": {
+        "schemaName": "nc_MotivoId",
+        "displayName": "Motivo"
+      }
+    },
+    {
+      "type": "OneToMany",
+      "referenced": "contact",
+      "referencing": "nc_ocorrencia",
+      "lookup": {
+        "schemaName": "nc_ContatoId",
+        "displayName": "Contato"
+      }
+    },
+    {
+      "type": "OneToMany",
+      "referenced": "nc_ocorrencia",
+      "referencing": "nc_interacao",
+      "lookup": {
+        "schemaName": "nc_OcorrenciaId",
+        "displayName": "Ocorrência"
+      }
+    }
+  ],
+  "design": {
+    "accentColor": "#005979",
+    "density": "comfortable",
+    "cornerRadius": "medium",
+    "darkMode": "light",
+    "layout": "cards"
+  },
+  "views": [
+    {
+      "entity": "nc_ocorrencia",
+      "name": "Minhas ocorrências em aberto",
+      "description": "Ocorrências do atendente logado que ainda não foram encerradas, pelo prazo de solução mais próximo.",
+      "columns": [
+        "nc_protocolo",
+        "nc_status",
+        "nc_prioridade",
+        "nc_situacaosla",
+        "nc_prazosolucao",
+        "nc_clienteid",
+        "nc_motivoid"
+      ],
+      "sort": [
+        {
+          "attr": "nc_prazosolucao",
+          "dir": "asc"
+        }
+      ],
+      "activeOnly": true,
+      "filters": [
+        {
+          "attr": "ownerid",
+          "op": "eq-userid"
+        },
+        {
+          "attr": "nc_status",
+          "op": "not-in",
+          "values": [
+            "Resolvida",
+            "Cancelada"
+          ]
+        }
+      ]
+    },
+    {
+      "entity": "nc_ocorrencia",
+      "name": "Novas ocorrências na fila",
+      "description": "Ocorrências com status Aberta, esperando triagem. As mais antigas primeiro.",
+      "columns": [
+        "nc_protocolo",
+        "nc_prioridade",
+        "nc_canal",
+        "nc_motivoid",
+        "nc_clienteid",
+        "nc_prazoresposta",
+        "createdon"
+      ],
+      "sort": [
+        {
+          "attr": "createdon",
+          "dir": "asc"
+        }
+      ],
+      "activeOnly": true,
+      "filters": [
+        {
+          "attr": "nc_status",
+          "op": "eq",
+          "value": "Aberta"
+        }
+      ]
+    },
+    {
+      "entity": "nc_ocorrencia",
+      "name": "SLA em risco ou estourado",
+      "description": "Ocorrências em aberto que estão perto de estourar ou já estouraram o prazo. É a fila de ação do supervisor.",
+      "columns": [
+        "nc_protocolo",
+        "nc_situacaosla",
+        "nc_prazosolucao",
+        "nc_prioridade",
+        "nc_status",
+        "ownerid",
+        "nc_motivoid"
+      ],
+      "sort": [
+        {
+          "attr": "nc_prazosolucao",
+          "dir": "asc"
+        }
+      ],
+      "activeOnly": true,
+      "filters": [
+        {
+          "attr": "nc_situacaosla",
+          "op": "in",
+          "values": [
+            "Em risco",
+            "Estourado"
+          ]
+        },
+        {
+          "attr": "nc_status",
+          "op": "not-in",
+          "values": [
+            "Resolvida",
+            "Cancelada"
+          ]
+        }
+      ]
+    },
+    {
+      "entity": "nc_ocorrencia",
+      "name": "Aguardando aprovação",
+      "description": "Ocorrências paradas na aprovação de reembolso. Os maiores valores primeiro.",
+      "columns": [
+        "nc_protocolo",
+        "nc_valorreembolso",
+        "nc_statusaprovacao",
+        "nc_clienteid",
+        "ownerid",
+        "modifiedon"
+      ],
+      "sort": [
+        {
+          "attr": "nc_valorreembolso",
+          "dir": "desc"
+        }
+      ],
+      "activeOnly": true,
+      "filters": [
+        {
+          "attr": "nc_status",
+          "op": "eq",
+          "value": "Aguardando aprovação"
+        }
+      ]
+    },
+    {
+      "entity": "nc_ocorrencia",
+      "name": "Ocorrências em aberto",
+      "description": "Todas as ocorrências ainda não encerradas, para acompanhar e redistribuir a fila.",
+      "columns": [
+        "nc_protocolo",
+        "nc_status",
+        "nc_prioridade",
+        "nc_situacaosla",
+        "ownerid",
+        "nc_transportadoraid",
+        "nc_prazosolucao"
+      ],
+      "sort": [
+        {
+          "attr": "nc_prazosolucao",
+          "dir": "asc"
+        }
+      ],
+      "activeOnly": true,
+      "filters": [
+        {
+          "attr": "nc_status",
+          "op": "not-in",
+          "values": [
+            "Resolvida",
+            "Cancelada"
+          ]
+        }
+      ]
+    },
+    {
+      "entity": "nc_ocorrencia",
+      "name": "Resolvidas no mês",
+      "description": "Ocorrências resolvidas no mês corrente, com a situação final do SLA e a avaliação do cliente.",
+      "columns": [
+        "nc_protocolo",
+        "nc_dataresolucao",
+        "nc_situacaosla",
+        "nc_csat",
+        "nc_motivoid",
+        "ownerid"
+      ],
+      "sort": [
+        {
+          "attr": "nc_dataresolucao",
+          "dir": "desc"
+        }
+      ],
+      "activeOnly": true,
+      "filters": [
+        {
+          "attr": "nc_status",
+          "op": "eq",
+          "value": "Resolvida"
+        },
+        {
+          "attr": "nc_dataresolucao",
+          "op": "this-month"
+        }
+      ]
+    },
+    {
+      "entity": "nc_ocorrencia",
+      "name": "Ocorrências recentes",
+      "description": "Todas as ocorrências, das mais novas para as mais antigas. Usada nas listas dentro de Pedido e Transportadora.",
+      "columns": [
+        "nc_protocolo",
+        "nc_status",
+        "nc_motivoid",
+        "nc_situacaosla",
+        "createdon"
+      ],
+      "sort": [
+        {
+          "attr": "createdon",
+          "dir": "desc"
+        }
+      ],
+      "activeOnly": true
+    },
+    {
+      "entity": "nc_pedido",
+      "name": "Pedidos recentes",
+      "description": "Pedidos ativos, dos mais novos para os mais antigos.",
+      "columns": [
+        "nc_numero",
+        "nc_clienteid",
+        "nc_transportadoraid",
+        "nc_statuspedido",
+        "nc_dataprevista",
+        "nc_valor",
+        "nc_uf"
+      ],
+      "sort": [
+        {
+          "attr": "nc_datapedido",
+          "dir": "desc"
+        }
+      ],
+      "activeOnly": true
+    },
+    {
+      "entity": "nc_motivo",
+      "name": "Motivos ativos",
+      "description": "Motivos em uso, com os prazos de SLA e a regra de reembolso.",
+      "columns": [
+        "nc_name",
+        "nc_categoria",
+        "nc_prioridadepadrao",
+        "nc_slarespostahoras",
+        "nc_slasolucaohoras",
+        "nc_permitereembolso"
+      ],
+      "sort": [
+        {
+          "attr": "nc_name",
+          "dir": "asc"
+        }
+      ],
+      "activeOnly": true
+    },
+    {
+      "entity": "nc_transportadora",
+      "name": "Transportadoras ativas",
+      "description": "Transportadoras parceiras em uso.",
+      "columns": [
+        "nc_name",
+        "nc_regiao",
+        "nc_slaentregadias",
+        "nc_cnpj"
+      ],
+      "sort": [
+        {
+          "attr": "nc_name",
+          "dir": "asc"
+        }
+      ],
+      "activeOnly": true
+    },
+    {
+      "entity": "nc_interacao",
+      "name": "Interações recentes",
+      "description": "Histórico das ocorrências, do mais novo para o mais antigo.",
+      "columns": [
+        "nc_name",
+        "nc_tipo",
+        "nc_visivelcliente",
+        "nc_ocorrenciaid",
+        "createdon"
+      ],
+      "sort": [
+        {
+          "attr": "createdon",
+          "dir": "desc"
+        }
+      ],
+      "activeOnly": true
+    }
+  ],
+  "charts": [
+    {
+      "entity": "nc_ocorrencia",
+      "name": "Ocorrências por situação do SLA",
+      "groupBy": "nc_situacaosla",
+      "measure": "count",
+      "chartType": "Pie",
+      "description": "Quanto da carga está no prazo, em risco ou estourada."
+    },
+    {
+      "entity": "nc_ocorrencia",
+      "name": "Ocorrências por status",
+      "groupBy": "nc_status",
+      "measure": "count",
+      "chartType": "Column",
+      "description": "Em que etapa da tratativa a carga está parada."
+    },
+    {
+      "entity": "nc_ocorrencia",
+      "name": "Ocorrências por prioridade",
+      "groupBy": "nc_prioridade",
+      "measure": "count",
+      "chartType": "Pie",
+      "description": "Distribuição da carga por prioridade."
+    },
+    {
+      "entity": "nc_ocorrencia",
+      "name": "Ocorrências por canal",
+      "groupBy": "nc_canal",
+      "measure": "count",
+      "chartType": "Bar",
+      "description": "Por onde as ocorrências chegam."
+    },
+    {
+      "entity": "nc_pedido",
+      "name": "Pedidos por status",
+      "groupBy": "nc_statuspedido",
+      "measure": "count",
+      "chartType": "Pie",
+      "description": "Situação logística da carteira de pedidos."
+    },
+    {
+      "entity": "nc_motivo",
+      "name": "Motivos por categoria",
+      "groupBy": "nc_categoria",
+      "measure": "count",
+      "chartType": "Column",
+      "description": "Como os motivos se dividem entre as categorias."
+    }
+  ],
+  "forms": [
+    {
+      "entity": "nc_ocorrencia",
+      "type": "main",
+      "name": "Ocorrência",
+      "isDefault": true,
+      "deactivateOtherMainForms": true,
+      "description": "Formulário de trabalho da ocorrência: abertura, tratativa, SLA, evidência, reembolso e avaliação, com o histórico de interações.",
+      "notes": true,
+      "tabs": [
+        {
+          "name": "tab_ocorrencia",
+          "label": "Ocorrência",
+          "columns": [
+            {
+              "width": "65%",
+              "sections": [
+                {
+                  "name": "sec_abertura",
+                  "label": "Abertura",
+                  "columns": 2,
+                  "fields": [
+                    {
+                      "name": "nc_protocolo",
+                      "readOnly": true
+                    },
+                    "nc_status",
+                    "nc_pedidoid",
+                    "nc_clienteid",
+                    "nc_motivoid",
+                    "nc_prioridade",
+                    "nc_canal",
+                    "nc_transportadoraid",
+                    "nc_contatoid",
+                    {
+                      "name": "nc_descricao",
+                      "colspan": 2
+                    }
+                  ]
+                },
+                {
+                  "name": "sec_tratativa",
+                  "label": "Tratativa",
+                  "columns": 2,
+                  "fields": [
+                    {
+                      "name": "nc_solucao",
+                      "colspan": 2
+                    },
+                    "nc_dataprimeiraresposta",
+                    "nc_dataresolucao"
+                  ]
+                }
+              ]
+            },
+            {
+              "width": "35%",
+              "sections": [
+                {
+                  "name": "sec_sla",
+                  "label": "SLA",
+                  "columns": 1,
+                  "fields": [
+                    "nc_situacaosla",
+                    "nc_prazoresposta",
+                    "nc_prazosolucao"
+                  ]
+                },
+                {
+                  "name": "sec_evidencia",
+                  "label": "Evidência",
+                  "columns": 1,
+                  "fields": [
+                    "nc_foto",
+                    "nc_latitude",
+                    "nc_longitude"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "tab_reembolso",
+          "label": "Reembolso",
+          "sections": [
+            {
+              "name": "sec_reembolso",
+              "label": "Reembolso e aprovação",
+              "columns": 2,
+              "fields": [
+                "nc_valorreembolso",
+                "nc_statusaprovacao",
+                "nc_aprovador",
+                "nc_lancadolegado",
+                "nc_numerolancamento",
+                {
+                  "name": "nc_comentarioaprovacao",
+                  "colspan": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "tab_cliente",
+          "label": "Avaliação do cliente",
+          "sections": [
+            {
+              "name": "sec_avaliacao",
+              "label": "Avaliação",
+              "columns": 1,
+              "fields": [
+                "nc_csat",
+                "nc_comentariocliente"
+              ]
+            }
+          ]
+        }
+      ],
+      "subgrids": [
+        {
+          "childEntity": "nc_interacao",
+          "view": "Interações recentes",
+          "label": "Histórico de interações"
+        }
+      ]
+    },
+    {
+      "entity": "nc_interacao",
+      "type": "main",
+      "name": "Interação",
+      "layout": "auto",
+      "description": "Registro de histórico da ocorrência."
+    },
+    {
+      "entity": "nc_interacao",
+      "name": "Nova interação",
+      "formType": "QuickCreate",
+      "layout": "auto",
+      "description": "Criação rápida de interação a partir do histórico da ocorrência."
+    },
+    {
+      "entity": "nc_pedido",
+      "type": "main",
+      "name": "Pedido",
+      "layout": "auto",
+      "isDefault": true,
+      "deactivateOtherMainForms": true,
+      "description": "Dados do pedido e as ocorrências ligadas a ele.",
+      "subgrids": [
+        {
+          "childEntity": "nc_ocorrencia",
+          "view": "Ocorrências recentes",
+          "label": "Ocorrências do pedido"
+        }
+      ]
+    },
+    {
+      "entity": "nc_motivo",
+      "type": "main",
+      "name": "Motivo",
+      "layout": "auto",
+      "isDefault": true,
+      "deactivateOtherMainForms": true,
+      "description": "Configuração do motivo: categoria, SLA, prioridade padrão e regra de reembolso."
+    },
+    {
+      "entity": "nc_transportadora",
+      "type": "main",
+      "name": "Transportadora",
+      "layout": "auto",
+      "isDefault": true,
+      "deactivateOtherMainForms": true,
+      "description": "Cadastro da transportadora e as ocorrências ligadas a ela.",
+      "subgrids": [
+        {
+          "childEntity": "nc_ocorrencia",
+          "view": "Ocorrências recentes",
+          "label": "Ocorrências da transportadora"
+        }
+      ]
+    }
+  ],
+  "businessProcessFlows": [
+    {
+      "entity": "nc_ocorrencia",
+      "name": "Tratativa NC",
+      "status": "Active",
+      "description": "Etapas da tratativa de uma ocorrência, da abertura ao encerramento.",
+      "stages": [
+        {
+          "name": "Abertura",
+          "steps": [
+            {
+              "name": "Pedido",
+              "field": "nc_pedidoid",
+              "required": true
+            },
+            {
+              "name": "Motivo",
+              "field": "nc_motivoid",
+              "required": true
+            },
+            {
+              "name": "Descrição",
+              "field": "nc_descricao",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "Análise",
+          "steps": [
+            {
+              "name": "Prioridade",
+              "field": "nc_prioridade",
+              "required": true
+            },
+            {
+              "name": "Primeira resposta",
+              "field": "nc_dataprimeiraresposta"
+            }
+          ]
+        },
+        {
+          "name": "Aprovação",
+          "steps": [
+            {
+              "name": "Reembolso solicitado",
+              "field": "nc_valorreembolso"
+            },
+            {
+              "name": "Aprovação do reembolso",
+              "field": "nc_statusaprovacao"
+            }
+          ]
+        },
+        {
+          "name": "Tratativa",
+          "steps": [
+            {
+              "name": "Solução aplicada",
+              "field": "nc_solucao",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "Encerramento",
+          "steps": [
+            {
+              "name": "Status final",
+              "field": "nc_status",
+              "required": true
+            },
+            {
+              "name": "Resolvida em",
+              "field": "nc_dataresolucao"
+            }
+          ]
+        }
+      ],
+      "securityRoles": {
+        "personas": [
+          "NC Atendente",
+          "NC Supervisor",
+          "NC Gestor"
+        ]
+      }
+    }
+  ],
+  "pages": [
+    {
+      "key": "painel-central",
+      "name": "Painel da Central",
+      "purpose": "Página inicial do app, com a mesma identidade visual do dashboard de Power BI do Grupo NC. Identidade: fonte Poppins (carregada do Google Fonts por @import, com fallback Segoe UI), tema sempre claro, fundo da página #F9F9F9, texto #2D2D2D, cor principal azul petróleo #005979, azul de destaque #3085BA, azul escuro #015873. Topo: uma faixa azul petróleo #005979 com cantos arredondados, com o título \"GRUPO NC\" em letras muito grandes e grossas (peso 800) na cor #DDF0FA, o subtítulo \"Central de Ocorrências\" em branco e uma frase curta em branco: \"O que precisa de atenção agora nas ocorrências de entrega\". Os 6 cartões de KPI ficam DENTRO dessa faixa, como cartões translúcidos (fundo branco com 22% de opacidade, borda branca com 35% de opacidade, texto branco, número grande em peso 700): ocorrências em aberto, novas na fila (status Aberta), em risco, estouradas, aguardando aprovação e % de SLA cumprido entre as resolvidas no mês. Abaixo da faixa, sobre o fundo claro: título de seção em #2D2D2D peso 700 (\"Ocorrências em aberto\") e três cartões brancos com sombra suave e cabeçalho azul petróleo #005979 com texto branco: por motivo, por transportadora e por prioridade, com barras horizontais em #005979 (prioridade Crítica em vermelho #C0392B, Alta em laranja #D9822B, Média em #3085BA, Baixa em cinza). Clicar numa barra filtra a tabela. Depois, uma tabela das 10 ocorrências em aberto de prazo de solução mais próximo (protocolo, status, prioridade, situação do SLA, prazo, motivo), com cabeçalho #005979 e texto branco; clicar no protocolo abre o registro no formulário de Ocorrência. Status em aberto = qualquer status diferente de Resolvida e Cancelada.",
+      "dataSources": [
+        "nc_ocorrencia",
+        "nc_motivo",
+        "nc_transportadora"
+      ],
+      "source": {
+        "kind": "tsx",
+        "codeFile": "painel-central.tsx"
+      }
+    }
+  ],
+  "appShell": {
+    "areas": [
+      {
+        "label": "Central",
+        "groups": [
+          {
+            "label": "Visão geral",
+            "subAreas": [
+              {
+                "page": "painel-central",
+                "title": "Painel da Central"
+              }
+            ]
+          },
+          {
+            "label": "Atendimento",
+            "subAreas": [
+              {
+                "entity": "nc_ocorrencia",
+                "title": "Ocorrências"
+              },
+              {
+                "entity": "nc_pedido",
+                "title": "Pedidos"
+              },
+              {
+                "entity": "account",
+                "title": "Clientes"
+              },
+              {
+                "entity": "contact",
+                "title": "Contatos"
+              }
+            ]
+          },
+          {
+            "label": "Configuração",
+            "subAreas": [
+              {
+                "entity": "nc_motivo",
+                "title": "Motivos"
+              },
+              {
+                "entity": "nc_transportadora",
+                "title": "Transportadoras"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "sampleData": {
+    "account": [
+      {
+        "name": "Mercado Bom Preço"
+      },
+      {
+        "name": "Rede Farmavida"
+      },
+      {
+        "name": "Casa & Obra Materiais"
+      },
+      {
+        "name": "Distribuidora Horizonte"
+      },
+      {
+        "name": "Supermercados Vale Verde"
+      }
+    ],
+    "nc_transportadora": [
+      {
+        "nc_name": "TransVia Logística",
+        "nc_cnpj": "12.345.678/0001-90",
+        "nc_regiao": "Sudeste",
+        "nc_slaentregadias": 3
+      },
+      {
+        "nc_name": "RotaSul Transportes",
+        "nc_cnpj": "23.456.789/0001-01",
+        "nc_regiao": "Sul",
+        "nc_slaentregadias": 4
+      },
+      {
+        "nc_name": "Expresso Cerrado",
+        "nc_cnpj": "34.567.890/0001-12",
+        "nc_regiao": "Centro-Oeste",
+        "nc_slaentregadias": 5
+      },
+      {
+        "nc_name": "NordesteLog",
+        "nc_cnpj": "45.678.901/0001-23",
+        "nc_regiao": "Nordeste",
+        "nc_slaentregadias": 7
+      }
+    ],
+    "nc_motivo": [
+      {
+        "nc_name": "Atraso na entrega",
+        "nc_categoria": "Logística",
+        "nc_prioridadepadrao": "Alta",
+        "nc_slarespostahoras": 4,
+        "nc_slasolucaohoras": 48,
+        "nc_permitereembolso": true
+      },
+      {
+        "nc_name": "Avaria no transporte",
+        "nc_categoria": "Logística",
+        "nc_prioridadepadrao": "Alta",
+        "nc_slarespostahoras": 4,
+        "nc_slasolucaohoras": 72,
+        "nc_permitereembolso": true
+      },
+      {
+        "nc_name": "Extravio de mercadoria",
+        "nc_categoria": "Logística",
+        "nc_prioridadepadrao": "Crítica",
+        "nc_slarespostahoras": 2,
+        "nc_slasolucaohoras": 120,
+        "nc_permitereembolso": true
+      },
+      {
+        "nc_name": "Entrega em endereço errado",
+        "nc_categoria": "Logística",
+        "nc_prioridadepadrao": "Média",
+        "nc_slarespostahoras": 8,
+        "nc_slasolucaohoras": 72,
+        "nc_permitereembolso": false
+      },
+      {
+        "nc_name": "Produto com defeito",
+        "nc_categoria": "Produto",
+        "nc_prioridadepadrao": "Média",
+        "nc_slarespostahoras": 8,
+        "nc_slasolucaohoras": 120,
+        "nc_permitereembolso": true
+      },
+      {
+        "nc_name": "Produto divergente do pedido",
+        "nc_categoria": "Produto",
+        "nc_prioridadepadrao": "Média",
+        "nc_slarespostahoras": 8,
+        "nc_slasolucaohoras": 96,
+        "nc_permitereembolso": true
+      },
+      {
+        "nc_name": "Cobrança indevida",
+        "nc_categoria": "Financeiro",
+        "nc_prioridadepadrao": "Alta",
+        "nc_slarespostahoras": 4,
+        "nc_slasolucaohoras": 72,
+        "nc_permitereembolso": true
+      },
+      {
+        "nc_name": "Atendimento insatisfatório",
+        "nc_categoria": "Atendimento",
+        "nc_prioridadepadrao": "Baixa",
+        "nc_slarespostahoras": 24,
+        "nc_slasolucaohoras": 120,
+        "nc_permitereembolso": false
+      }
+    ],
+    "nc_pedido": [
+      {
+        "nc_rastreio": "NC2611000101",
+        "nc_statuspedido": "Entregue",
+        "nc_datapedido": "2026-11-03T00:00:00Z",
+        "nc_dataprevista": "2026-11-06T00:00:00Z",
+        "nc_dataentrega": "2026-11-10T00:00:00Z",
+        "nc_valor": 4820.5,
+        "nc_uf": "SP",
+        "nc_cidade": "Campinas",
+        "$parents": [
+          {
+            "entity": "account",
+            "match": {
+              "name": "Mercado Bom Preço"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "TransVia Logística"
+            }
+          }
+        ]
+      },
+      {
+        "nc_rastreio": "NC2611000102",
+        "nc_statuspedido": "Em trânsito",
+        "nc_datapedido": "2026-11-12T00:00:00Z",
+        "nc_dataprevista": "2026-11-17T00:00:00Z",
+        "nc_valor": 12650,
+        "nc_uf": "SP",
+        "nc_cidade": "São Paulo",
+        "$parents": [
+          {
+            "entity": "account",
+            "match": {
+              "name": "Rede Farmavida"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "TransVia Logística"
+            }
+          }
+        ]
+      },
+      {
+        "nc_rastreio": "NC2611000103",
+        "nc_statuspedido": "Entregue",
+        "nc_datapedido": "2026-11-05T00:00:00Z",
+        "nc_dataprevista": "2026-11-09T00:00:00Z",
+        "nc_dataentrega": "2026-11-09T00:00:00Z",
+        "nc_valor": 2310.9,
+        "nc_uf": "PR",
+        "nc_cidade": "Curitiba",
+        "$parents": [
+          {
+            "entity": "account",
+            "match": {
+              "name": "Casa & Obra Materiais"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "RotaSul Transportes"
+            }
+          }
+        ]
+      },
+      {
+        "nc_rastreio": "NC2611000104",
+        "nc_statuspedido": "Devolvido",
+        "nc_datapedido": "2026-11-02T00:00:00Z",
+        "nc_dataprevista": "2026-11-07T00:00:00Z",
+        "nc_dataentrega": "2026-11-08T00:00:00Z",
+        "nc_valor": 7980,
+        "nc_uf": "GO",
+        "nc_cidade": "Goiânia",
+        "$parents": [
+          {
+            "entity": "account",
+            "match": {
+              "name": "Distribuidora Horizonte"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "Expresso Cerrado"
+            }
+          }
+        ]
+      },
+      {
+        "nc_rastreio": "NC2611000105",
+        "nc_statuspedido": "Em trânsito",
+        "nc_datapedido": "2026-11-14T00:00:00Z",
+        "nc_dataprevista": "2026-11-21T00:00:00Z",
+        "nc_valor": 5430.75,
+        "nc_uf": "PE",
+        "nc_cidade": "Recife",
+        "$parents": [
+          {
+            "entity": "account",
+            "match": {
+              "name": "Supermercados Vale Verde"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "NordesteLog"
+            }
+          }
+        ]
+      },
+      {
+        "nc_rastreio": "NC2611000106",
+        "nc_statuspedido": "Entregue",
+        "nc_datapedido": "2026-11-10T00:00:00Z",
+        "nc_dataprevista": "2026-11-13T00:00:00Z",
+        "nc_dataentrega": "2026-11-13T00:00:00Z",
+        "nc_valor": 1890,
+        "nc_uf": "RJ",
+        "nc_cidade": "Rio de Janeiro",
+        "$parents": [
+          {
+            "entity": "account",
+            "match": {
+              "name": "Mercado Bom Preço"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "TransVia Logística"
+            }
+          }
+        ]
+      },
+      {
+        "nc_rastreio": "NC2611000107",
+        "nc_statuspedido": "Entregue",
+        "nc_datapedido": "2026-11-11T00:00:00Z",
+        "nc_dataprevista": "2026-11-15T00:00:00Z",
+        "nc_dataentrega": "2026-11-18T00:00:00Z",
+        "nc_valor": 3375.4,
+        "nc_uf": "RS",
+        "nc_cidade": "Porto Alegre",
+        "$parents": [
+          {
+            "entity": "account",
+            "match": {
+              "name": "Casa & Obra Materiais"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "RotaSul Transportes"
+            }
+          }
+        ]
+      },
+      {
+        "nc_rastreio": "NC2611000108",
+        "nc_statuspedido": "Em separação",
+        "nc_datapedido": "2026-11-23T00:00:00Z",
+        "nc_dataprevista": "2026-11-28T00:00:00Z",
+        "nc_valor": 9120,
+        "nc_uf": "BA",
+        "nc_cidade": "Salvador",
+        "$parents": [
+          {
+            "entity": "account",
+            "match": {
+              "name": "Rede Farmavida"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "NordesteLog"
+            }
+          }
+        ]
+      },
+      {
+        "nc_rastreio": "NC2611000109",
+        "nc_statuspedido": "Entregue",
+        "nc_datapedido": "2026-11-16T00:00:00Z",
+        "nc_dataprevista": "2026-11-19T00:00:00Z",
+        "nc_dataentrega": "2026-11-20T00:00:00Z",
+        "nc_valor": 15200,
+        "nc_uf": "SP",
+        "nc_cidade": "Hortolândia",
+        "$parents": [
+          {
+            "entity": "account",
+            "match": {
+              "name": "Distribuidora Horizonte"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "TransVia Logística"
+            }
+          }
+        ]
+      },
+      {
+        "nc_rastreio": "NC2611000110",
+        "nc_statuspedido": "Entregue",
+        "nc_datapedido": "2026-11-17T00:00:00Z",
+        "nc_dataprevista": "2026-11-22T00:00:00Z",
+        "nc_dataentrega": "2026-11-22T00:00:00Z",
+        "nc_valor": 2740.6,
+        "nc_uf": "MT",
+        "nc_cidade": "Cuiabá",
+        "$parents": [
+          {
+            "entity": "account",
+            "match": {
+              "name": "Supermercados Vale Verde"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "Expresso Cerrado"
+            }
+          }
+        ]
+      }
+    ],
+    "nc_ocorrencia": [
+      {
+        "nc_status": "Resolvida",
+        "nc_prioridade": "Alta",
+        "nc_canal": "App de campo",
+        "nc_situacaosla": "Cumprido",
+        "nc_descricao": "Entrega chegou 4 dias depois do prometido. Cliente precisou remarcar a reposição da loja.",
+        "nc_solucao": "Atraso confirmado com a transportadora. Crédito de frete concedido ao cliente.",
+        "nc_prazoresposta": "2026-11-10T14:00:00Z",
+        "nc_prazosolucao": "2026-11-12T10:00:00Z",
+        "nc_dataprimeiraresposta": "2026-11-10T11:30:00Z",
+        "nc_dataresolucao": "2026-11-11T16:20:00Z",
+        "nc_valorreembolso": 180,
+        "nc_statusaprovacao": "Aprovada",
+        "nc_aprovador": "Supervisor NC",
+        "nc_lancadolegado": true,
+        "nc_numerolancamento": "LEG-55120",
+        "nc_csat": 4,
+        "$parents": [
+          {
+            "entity": "nc_pedido",
+            "match": {
+              "nc_rastreio": "NC2611000101"
+            }
+          },
+          {
+            "entity": "account",
+            "match": {
+              "name": "Mercado Bom Preço"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "TransVia Logística"
+            }
+          },
+          {
+            "entity": "nc_motivo",
+            "match": {
+              "nc_name": "Atraso na entrega"
+            }
+          }
+        ],
+        "nc_idorigem": "APP-20261110-001"
+      },
+      {
+        "nc_status": "Em tratativa",
+        "nc_prioridade": "Crítica",
+        "nc_canal": "Central",
+        "nc_situacaosla": "Em risco",
+        "nc_descricao": "Pedido acima de R$ 10 mil parado no centro de distribuição há 5 dias, sem atualização de rastreio.",
+        "nc_prazoresposta": "2026-11-24T10:00:00Z",
+        "nc_prazosolucao": "2026-11-26T18:00:00Z",
+        "nc_dataprimeiraresposta": "2026-11-24T09:10:00Z",
+        "nc_statusaprovacao": "Não necessária",
+        "$parents": [
+          {
+            "entity": "nc_pedido",
+            "match": {
+              "nc_rastreio": "NC2611000102"
+            }
+          },
+          {
+            "entity": "account",
+            "match": {
+              "name": "Rede Farmavida"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "TransVia Logística"
+            }
+          },
+          {
+            "entity": "nc_motivo",
+            "match": {
+              "nc_name": "Atraso na entrega"
+            }
+          }
+        ],
+        "nc_idorigem": "CENTRAL-20261124-002"
+      },
+      {
+        "nc_status": "Aguardando aprovação",
+        "nc_prioridade": "Média",
+        "nc_canal": "Portal do cliente",
+        "nc_situacaosla": "No prazo",
+        "nc_descricao": "Três caixas chegaram com o lacre rompido e itens faltando em relação à nota.",
+        "nc_prazoresposta": "2026-11-25T20:00:00Z",
+        "nc_prazosolucao": "2026-11-29T12:00:00Z",
+        "nc_dataprimeiraresposta": "2026-11-25T13:00:00Z",
+        "nc_valorreembolso": 640,
+        "nc_statusaprovacao": "Pendente",
+        "$parents": [
+          {
+            "entity": "nc_pedido",
+            "match": {
+              "nc_rastreio": "NC2611000103"
+            }
+          },
+          {
+            "entity": "account",
+            "match": {
+              "name": "Casa & Obra Materiais"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "RotaSul Transportes"
+            }
+          },
+          {
+            "entity": "nc_motivo",
+            "match": {
+              "nc_name": "Produto divergente do pedido"
+            }
+          }
+        ],
+        "nc_idorigem": "PORTAL-20261125-003"
+      },
+      {
+        "nc_status": "Aberta",
+        "nc_prioridade": "Alta",
+        "nc_canal": "App de campo",
+        "nc_situacaosla": "Estourado",
+        "nc_descricao": "Mercadoria devolvida com avaria na embalagem. Motorista registrou fotos no momento da entrega.",
+        "nc_prazoresposta": "2026-11-21T12:00:00Z",
+        "nc_prazosolucao": "2026-11-24T08:00:00Z",
+        "nc_latitude": -16.686891,
+        "nc_longitude": -49.264794,
+        "$parents": [
+          {
+            "entity": "nc_pedido",
+            "match": {
+              "nc_rastreio": "NC2611000104"
+            }
+          },
+          {
+            "entity": "account",
+            "match": {
+              "name": "Distribuidora Horizonte"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "Expresso Cerrado"
+            }
+          },
+          {
+            "entity": "nc_motivo",
+            "match": {
+              "nc_name": "Avaria no transporte"
+            }
+          }
+        ],
+        "nc_idorigem": "APP-20261121-004"
+      },
+      {
+        "nc_status": "Em análise",
+        "nc_prioridade": "Alta",
+        "nc_canal": "Assistente Teams",
+        "nc_situacaosla": "No prazo",
+        "nc_descricao": "Cliente perguntou pelo pedido em trânsito que já passou da data prevista.",
+        "nc_prazoresposta": "2026-11-25T18:00:00Z",
+        "nc_prazosolucao": "2026-11-27T14:00:00Z",
+        "$parents": [
+          {
+            "entity": "nc_pedido",
+            "match": {
+              "nc_rastreio": "NC2611000105"
+            }
+          },
+          {
+            "entity": "account",
+            "match": {
+              "name": "Supermercados Vale Verde"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "NordesteLog"
+            }
+          },
+          {
+            "entity": "nc_motivo",
+            "match": {
+              "nc_name": "Atraso na entrega"
+            }
+          }
+        ],
+        "nc_idorigem": "TEAMS-20261125-005"
+      },
+      {
+        "nc_status": "Resolvida",
+        "nc_prioridade": "Média",
+        "nc_canal": "Central",
+        "nc_situacaosla": "Não cumprido",
+        "nc_descricao": "Nota fiscal veio com o valor do frete cobrado em duplicidade.",
+        "nc_solucao": "Cobrança duplicada estornada pelo financeiro.",
+        "nc_prazoresposta": "2026-11-14T12:00:00Z",
+        "nc_prazosolucao": "2026-11-17T08:00:00Z",
+        "nc_dataprimeiraresposta": "2026-11-14T16:40:00Z",
+        "nc_dataresolucao": "2026-11-18T10:15:00Z",
+        "nc_valorreembolso": 95,
+        "nc_statusaprovacao": "Aprovada",
+        "nc_aprovador": "Supervisor NC",
+        "nc_csat": 3,
+        "$parents": [
+          {
+            "entity": "nc_pedido",
+            "match": {
+              "nc_rastreio": "NC2611000106"
+            }
+          },
+          {
+            "entity": "account",
+            "match": {
+              "name": "Mercado Bom Preço"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "TransVia Logística"
+            }
+          },
+          {
+            "entity": "nc_motivo",
+            "match": {
+              "nc_name": "Cobrança indevida"
+            }
+          }
+        ],
+        "nc_idorigem": "CENTRAL-20261114-006"
+      },
+      {
+        "nc_status": "Resolvida",
+        "nc_prioridade": "Alta",
+        "nc_canal": "Portal do cliente",
+        "nc_situacaosla": "Cumprido",
+        "nc_descricao": "Entrega com 3 dias de atraso por falta de veículo na rota sul.",
+        "nc_solucao": "Rota remanejada e cliente informado. Desconto aplicado no próximo pedido.",
+        "nc_prazoresposta": "2026-11-18T13:00:00Z",
+        "nc_prazosolucao": "2026-11-20T09:00:00Z",
+        "nc_dataprimeiraresposta": "2026-11-18T10:05:00Z",
+        "nc_dataresolucao": "2026-11-19T17:45:00Z",
+        "nc_statusaprovacao": "Não necessária",
+        "nc_csat": 5,
+        "$parents": [
+          {
+            "entity": "nc_pedido",
+            "match": {
+              "nc_rastreio": "NC2611000107"
+            }
+          },
+          {
+            "entity": "account",
+            "match": {
+              "name": "Casa & Obra Materiais"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "RotaSul Transportes"
+            }
+          },
+          {
+            "entity": "nc_motivo",
+            "match": {
+              "nc_name": "Atraso na entrega"
+            }
+          }
+        ],
+        "nc_idorigem": "PORTAL-20261118-007"
+      },
+      {
+        "nc_status": "Aguardando aprovação",
+        "nc_prioridade": "Crítica",
+        "nc_canal": "Central",
+        "nc_situacaosla": "Em risco",
+        "nc_descricao": "Lote de medicamentos entregue com 2 volumes a menos. Cliente pede reposição imediata ou crédito.",
+        "nc_prazoresposta": "2026-11-23T12:00:00Z",
+        "nc_prazosolucao": "2026-11-26T12:00:00Z",
+        "nc_dataprimeiraresposta": "2026-11-23T10:20:00Z",
+        "nc_valorreembolso": 3900,
+        "nc_statusaprovacao": "Pendente",
+        "$parents": [
+          {
+            "entity": "nc_pedido",
+            "match": {
+              "nc_rastreio": "NC2611000109"
+            }
+          },
+          {
+            "entity": "account",
+            "match": {
+              "name": "Distribuidora Horizonte"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "TransVia Logística"
+            }
+          },
+          {
+            "entity": "nc_motivo",
+            "match": {
+              "nc_name": "Extravio de mercadoria"
+            }
+          }
+        ],
+        "nc_idorigem": "CENTRAL-20261123-008"
+      },
+      {
+        "nc_status": "Aberta",
+        "nc_prioridade": "Baixa",
+        "nc_canal": "Portal do cliente",
+        "nc_situacaosla": "No prazo",
+        "nc_descricao": "Cliente reclama que não recebeu retorno da central na última solicitação.",
+        "nc_prazoresposta": "2026-11-26T15:00:00Z",
+        "nc_prazosolucao": "2026-11-30T15:00:00Z",
+        "$parents": [
+          {
+            "entity": "nc_pedido",
+            "match": {
+              "nc_rastreio": "NC2611000110"
+            }
+          },
+          {
+            "entity": "account",
+            "match": {
+              "name": "Supermercados Vale Verde"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "Expresso Cerrado"
+            }
+          },
+          {
+            "entity": "nc_motivo",
+            "match": {
+              "nc_name": "Atendimento insatisfatório"
+            }
+          }
+        ],
+        "nc_idorigem": "PORTAL-20261126-009"
+      },
+      {
+        "nc_status": "Em tratativa",
+        "nc_prioridade": "Média",
+        "nc_canal": "App de campo",
+        "nc_situacaosla": "No prazo",
+        "nc_descricao": "Produto com defeito de fabricação identificado na conferência de recebimento.",
+        "nc_prazoresposta": "2026-11-25T16:00:00Z",
+        "nc_prazosolucao": "2026-11-30T08:00:00Z",
+        "nc_dataprimeiraresposta": "2026-11-25T09:30:00Z",
+        "nc_statusaprovacao": "Não necessária",
+        "$parents": [
+          {
+            "entity": "nc_pedido",
+            "match": {
+              "nc_rastreio": "NC2611000108"
+            }
+          },
+          {
+            "entity": "account",
+            "match": {
+              "name": "Rede Farmavida"
+            }
+          },
+          {
+            "entity": "nc_transportadora",
+            "match": {
+              "nc_name": "NordesteLog"
+            }
+          },
+          {
+            "entity": "nc_motivo",
+            "match": {
+              "nc_name": "Produto com defeito"
+            }
+          }
+        ],
+        "nc_idorigem": "APP-20261125-010"
+      }
+    ]
+  }
+}

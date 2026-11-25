@@ -1,0 +1,245 @@
+ComponentDefinitions:
+  cmpCardOcorrencia:
+    DefinitionType: CanvasComponent
+    Description: Card de ocorrência do Grupo NC com protocolo, motivo, pedido, abertura, status e situação do SLA. A faixa da esquerda usa a cor do SLA.
+    CustomProperties:
+      Abertura:
+        PropertyKind: Input
+        DisplayName: Abertura
+        Description: Data e hora de abertura já formatadas.
+        DataType: Text
+        Default: =""
+      CorSLA:
+        PropertyKind: Input
+        DisplayName: CorSLA
+        Description: Cor da situação do SLA (faixa e selo).
+        DataType: Color
+        Default: =RGBA(46, 125, 50, 1)
+      CorStatus:
+        PropertyKind: Input
+        DisplayName: CorStatus
+        Description: Cor do selo de status.
+        DataType: Color
+        Default: =RGBA(48, 133, 186, 1)
+      Motivo:
+        PropertyKind: Input
+        DisplayName: Motivo
+        Description: Nome do motivo.
+        DataType: Text
+        Default: ="Motivo"
+      Pedido:
+        PropertyKind: Input
+        DisplayName: Pedido
+        Description: Linha do pedido (número e rastreio).
+        DataType: Text
+        Default: =""
+      Protocolo:
+        PropertyKind: Input
+        DisplayName: Protocolo
+        Description: Protocolo da ocorrência (OC-000000).
+        DataType: Text
+        Default: ="OC-000000"
+      SituacaoSLA:
+        PropertyKind: Input
+        DisplayName: SituacaoSLA
+        Description: Texto da situação do SLA.
+        DataType: Text
+        Default: ="No prazo"
+      Status:
+        PropertyKind: Input
+        DisplayName: Status
+        Description: Texto do status.
+        DataType: Text
+        Default: ="Aberta"
+    Properties:
+      Height: =148
+    Children:
+      - conCardFundo:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            BorderColor: =RGBA(230, 237, 240, 1)
+            BorderThickness: =1
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Horizontal
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Width: =Parent.Width
+          Children:
+            - conCardFaixa:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =cmpCardOcorrencia.CorSLA
+                  FillPortions: =0
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  RadiusBottomLeft: =12
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =12
+                  RadiusTopRight: =0
+                  Width: =6
+            - conCardCorpo:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =6
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =12
+                  PaddingLeft: =14
+                  PaddingRight: =14
+                  PaddingTop: =12
+                Children:
+                  - conCardLinha1:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =26
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =8
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - lblCardProtocolo:
+                            Control: ModernText
+                            Properties:
+                              AccessibleLabel: ="Protocolo " & cmpCardOcorrencia.Protocolo
+                              Color: =RGBA(0, 89, 121, 1)
+                              FillPortions: =1
+                              Font: ="Poppins, 'Segoe UI', sans-serif"
+                              FontWeight: =FontWeight.Bold
+                              Height: =26
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =18
+                              Text: =cmpCardOcorrencia.Protocolo
+                              Wrap: =false
+                        - lblCardAbertura:
+                            Control: ModernText
+                            Properties:
+                              AccessibleLabel: ="Aberta em " & cmpCardOcorrencia.Abertura
+                              Align: =Align.Right
+                              Color: =RGBA(92, 92, 92, 1)
+                              Font: ="Poppins, 'Segoe UI', sans-serif"
+                              Height: =20
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =12
+                              Text: =cmpCardOcorrencia.Abertura
+                              Width: =130
+                              Wrap: =false
+                  - lblCardMotivo:
+                      Control: ModernText
+                      Properties:
+                        AccessibleLabel: ="Motivo " & cmpCardOcorrencia.Motivo
+                        Color: =RGBA(45, 45, 45, 1)
+                        Font: ="Poppins, 'Segoe UI', sans-serif"
+                        FontWeight: =FontWeight.Semibold
+                        Height: =22
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =15
+                        Text: =cmpCardOcorrencia.Motivo
+                        Wrap: =false
+                  - lblCardPedido:
+                      Control: ModernText
+                      Properties:
+                        AccessibleLabel: =cmpCardOcorrencia.Pedido
+                        Color: =RGBA(92, 92, 92, 1)
+                        Font: ="Poppins, 'Segoe UI', sans-serif"
+                        Height: =18
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =12
+                        Text: =cmpCardOcorrencia.Pedido
+                        Wrap: =false
+                  - conCardSelos:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =28
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =8
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - lblCardStatus:
+                            Control: ModernText
+                            Properties:
+                              AccessibleLabel: ="Status " & cmpCardOcorrencia.Status
+                              Align: =Align.Center
+                              Color: =ColorFade(cmpCardOcorrencia.CorStatus, -30%)
+                              Fill: =ColorFade(cmpCardOcorrencia.CorStatus, 82%)
+                              Font: ="Poppins, 'Segoe UI', sans-serif"
+                              FontWeight: =FontWeight.Semibold
+                              Height: =28
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =10
+                              PaddingRight: =10
+                              PaddingTop: =0
+                              RadiusBottomLeft: =14
+                              RadiusBottomRight: =14
+                              RadiusTopLeft: =14
+                              RadiusTopRight: =14
+                              Size: =12
+                              Text: =cmpCardOcorrencia.Status
+                              Width: =168
+                              Wrap: =false
+                        - lblCardSLA:
+                            Control: ModernText
+                            Properties:
+                              AccessibleLabel: ="SLA " & cmpCardOcorrencia.SituacaoSLA
+                              Align: =Align.Center
+                              Color: =ColorFade(cmpCardOcorrencia.CorSLA, -30%)
+                              Fill: =ColorFade(cmpCardOcorrencia.CorSLA, 82%)
+                              Font: ="Poppins, 'Segoe UI', sans-serif"
+                              FontWeight: =FontWeight.Semibold
+                              Height: =28
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =10
+                              PaddingRight: =10
+                              PaddingTop: =0
+                              RadiusBottomLeft: =14
+                              RadiusBottomRight: =14
+                              RadiusTopLeft: =14
+                              RadiusTopRight: =14
+                              Size: =12
+                              Text: =cmpCardOcorrencia.SituacaoSLA
+                              Width: =128
+                              Wrap: =false

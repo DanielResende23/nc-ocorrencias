@@ -1,0 +1,93 @@
+ComponentDefinitions:
+  cmpCabecalho:
+    DefinitionType: CanvasComponent
+    Description: Cabeçalho do Grupo NC, faixa azul petróleo com a marca GRUPO NC, o nome da tela e um subtítulo opcional.
+    CustomProperties:
+      Subtitulo:
+        PropertyKind: Input
+        DisplayName: Subtitulo
+        Description: Linha de apoio abaixo do nome da tela. Em branco, a linha fica vazia.
+        DataType: Text
+        Default: =""
+      Titulo:
+        PropertyKind: Input
+        DisplayName: Titulo
+        Description: Nome da tela.
+        DataType: Text
+        Default: ="Minhas ocorrências"
+    Properties:
+      Fill: =RGBA(0, 89, 121, 1)
+      Height: =96
+    Children:
+      - conCabTexto:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =RGBA(0, 89, 121, 1)
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =2
+            LayoutJustifyContent: =LayoutJustifyContent.Center
+            PaddingBottom: =12
+            PaddingLeft: =20
+            PaddingRight: =20
+            PaddingTop: =12
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Width: =Parent.Width
+          Children:
+            - lblCabMarca:
+                Control: ModernText
+                Properties:
+                  AccessibleLabel: ="Grupo NC"
+                  Color: =RGBA(221, 240, 250, 1)
+                  Font: ="Poppins, 'Segoe UI', sans-serif"
+                  FontWeight: =FontWeight.Bold
+                  Height: =18
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: ="GRUPO NC"
+                  Wrap: =false
+            - lblCabTitulo:
+                Control: ModernText
+                Properties:
+                  AccessibleLabel: =cmpCabecalho.Titulo
+                  Color: =RGBA(255, 255, 255, 1)
+                  Font: ="Poppins, 'Segoe UI', sans-serif"
+                  FontWeight: =FontWeight.Bold
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =22
+                  Text: =cmpCabecalho.Titulo
+                  Wrap: =false
+            - lblCabSubtitulo:
+                Control: ModernText
+                Properties:
+                  AccessibleLabel: =cmpCabecalho.Subtitulo
+                  Color: =RGBA(221, 240, 250, 1)
+                  Font: ="Poppins, 'Segoe UI', sans-serif"
+                  Height: =18
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =cmpCabecalho.Subtitulo
+                  Visible: =!IsBlank(cmpCabecalho.Subtitulo)
+                  Wrap: =false

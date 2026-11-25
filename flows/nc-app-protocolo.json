@@ -1,0 +1,124 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "$connections": { "defaultValue": {}, "type": "Object" },
+    "$authentication": { "defaultValue": {}, "type": "SecureObject" }
+  },
+  "triggers": {
+    "manual": {
+      "type": "Request",
+      "kind": "PowerAppV2",
+      "description": "Chamado pelo app NC Campo logo depois de salvar a ocorrência.",
+      "inputs": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "title": "ocorrenciaId",
+              "type": "string",
+              "x-ms-dynamically-added": true,
+              "description": "GUID da ocorrência criada pelo app",
+              "x-ms-content-hint": "TEXT"
+            }
+          },
+          "required": [ "text" ]
+        }
+      }
+    }
+  },
+  "actions": {
+    "Aguardar_fluxo_de_abertura": {
+      "type": "Until",
+      "description": "O fluxo de abertura calcula os prazos de forma assíncrona; espera até 1 minuto por eles.",
+      "expression": "@not(empty(outputs('Obter_ocorrencia')?['body/nc_prazosolucao']))",
+      "limit": { "count": 12, "timeout": "PT1M" },
+      "actions": {
+        "Obter_ocorrencia": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "nc_ocorrencias",
+              "recordId": "@triggerBody()?['text']",
+              "$select": "nc_protocolo,nc_descricao,nc_prazoresposta,nc_prazosolucao",
+              "$expand": "nc_ContatoId($select=emailaddress1,firstname)"
+            }
+          },
+          "runAfter": {}
+        },
+        "Esperar_3_segundos": {
+          "type": "Wait",
+          "inputs": { "interval": { "count": 3, "unit": "Second" } },
+          "runAfter": { "Obter_ocorrencia": [ "Succeeded" ] }
+        }
+      },
+      "runAfter": {}
+    },
+    "Formatar_prazo_de_resposta": {
+      "type": "Compose",
+      "inputs": "@if(empty(outputs('Obter_ocorrencia')?['body/nc_prazoresposta']), '', formatDateTime(convertFromUtc(outputs('Obter_ocorrencia')?['body/nc_prazoresposta'], 'E. South America Standard Time'), 'dd/MM/yyyy HH:mm'))",
+      "runAfter": { "Aguardar_fluxo_de_abertura": [ "Succeeded" ] }
+    },
+    "Formatar_prazo_de_solucao": {
+      "type": "Compose",
+      "inputs": "@if(empty(outputs('Obter_ocorrencia')?['body/nc_prazosolucao']), '', formatDateTime(convertFromUtc(outputs('Obter_ocorrencia')?['body/nc_prazosolucao'], 'E. South America Standard Time'), 'dd/MM/yyyy HH:mm'))",
+      "runAfter": { "Formatar_prazo_de_resposta": [ "Succeeded" ] }
+    },
+    "Contato_tem_email": {
+      "type": "If",
+      "description": "Só envia o comprovante quando a ocorrência tem um contato com e-mail.",
+      "expression": { "and": [ { "not": { "equals": [ "@coalesce(outputs('Obter_ocorrencia')?['body/nc_ContatoId/emailaddress1'], '')", "" ] } } ] },
+      "actions": {
+        "Enviar_comprovante": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365",
+              "operationId": "SendEmailV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "emailMessage/To": "@outputs('Obter_ocorrencia')?['body/nc_ContatoId/emailaddress1']",
+              "emailMessage/Subject": "@concat('Grupo NC | Ocorrência ', outputs('Obter_ocorrencia')?['body/nc_protocolo'], ' registrada')",
+              "emailMessage/Body": "<div style=\"font-family:Poppins,Segoe UI,Arial,sans-serif;color:#2D2D2D\"><div style=\"background:#005979;color:#FFFFFF;padding:16px 20px;border-radius:8px\"><div style=\"font-size:22px;font-weight:800;color:#DDF0FA\">GRUPO NC</div><div style=\"font-size:15px\">Central de Ocorrências</div></div><p>Olá, @{coalesce(outputs('Obter_ocorrencia')?['body/nc_ContatoId/firstname'], 'cliente')}.</p><p>Registramos a sua ocorrência <b>@{outputs('Obter_ocorrencia')?['body/nc_protocolo']}</b>.</p><p><b>O que foi informado:</b> @{outputs('Obter_ocorrencia')?['body/nc_descricao']}</p><table style=\"border-collapse:collapse\"><tr><td style=\"padding:4px 12px 4px 0\">Primeira resposta até</td><td><b>@{outputs('Formatar_prazo_de_resposta')}</b></td></tr><tr><td style=\"padding:4px 12px 4px 0\">Solução até</td><td><b>@{outputs('Formatar_prazo_de_solucao')}</b></td></tr></table><p>Você pode acompanhar o andamento pelo Portal do Cliente.</p><p style=\"color:#6B6B6B;font-size:12px\">Mensagem automática do NC Ocorrências.</p></div>",
+              "emailMessage/Importance": "Normal"
+            }
+          },
+          "runAfter": {}
+        }
+      },
+      "else": { "actions": {} },
+      "runAfter": { "Formatar_prazo_de_solucao": [ "Succeeded" ] }
+    },
+    "Responder_ao_app": {
+      "type": "Response",
+      "kind": "PowerApp",
+      "description": "Devolve ao app o protocolo e os prazos para mostrar na tela de confirmação.",
+      "inputs": {
+        "statusCode": 200,
+        "body": {
+          "protocolo": "@{outputs('Obter_ocorrencia')?['body/nc_protocolo']}",
+          "prazoresposta": "@{outputs('Formatar_prazo_de_resposta')}",
+          "prazosolucao": "@{outputs('Formatar_prazo_de_solucao')}",
+          "emailenviado": "@{if(empty(coalesce(outputs('Obter_ocorrencia')?['body/nc_ContatoId/emailaddress1'], '')), 'nao', 'sim')}"
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "protocolo": { "title": "protocolo", "x-ms-dynamically-added": true, "type": "string" },
+            "prazoresposta": { "title": "prazoresposta", "x-ms-dynamically-added": true, "type": "string" },
+            "prazosolucao": { "title": "prazosolucao", "x-ms-dynamically-added": true, "type": "string" },
+            "emailenviado": { "title": "emailenviado", "x-ms-dynamically-added": true, "type": "string" }
+          }
+        }
+      },
+      "runAfter": { "Contato_tem_email": [ "Succeeded" ] }
+    }
+  },
+  "outputs": {}
+}

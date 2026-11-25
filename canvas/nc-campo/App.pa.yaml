@@ -1,0 +1,73 @@
+App:
+  Properties:
+    Formulas: |-
+      =// Identidade visual do Grupo NC (a mesma do dashboard e do NC Central)
+      CorPrimaria = RGBA(0, 89, 121, 1);
+      CorPrimariaEscura = RGBA(1, 88, 115, 1);
+      CorDestaque = RGBA(48, 133, 186, 1);
+      CorTextoClaro = RGBA(221, 240, 250, 1);
+      CorFundo = RGBA(249, 249, 249, 1);
+      CorSuperficie = RGBA(255, 255, 255, 1);
+      CorTexto = RGBA(45, 45, 45, 1);
+      CorTextoSuave = RGBA(92, 92, 92, 1);
+      CorBorda = RGBA(230, 237, 240, 1);
+      CorTint = RGBA(234, 244, 248, 1);
+      CorCritica = RGBA(192, 57, 43, 1);
+      CorAlta = RGBA(217, 130, 43, 1);
+      CorCinza = RGBA(138, 138, 138, 1);
+      CorSucesso = RGBA(46, 125, 50, 1);
+      FonteNC = "Poppins, 'Segoe UI', sans-serif";
+
+      // Usuário atual e as ocorrências que ele abriu (consultas delegáveis no Dataverse)
+      UsuarioAtual = LookUp(Usuários, 'Email Primário' = User().Email);
+      MinhasOcorrencias =
+        Sort(
+          Filter(Ocorrências, 'Criada Por'.Usuário = UsuarioAtual.Usuário),
+          'Data de Criação',
+          SortOrder.Descending
+        );
+
+      // Cores por situação do SLA, prioridade e status (recebem o texto da escolha)
+      CorSLA(situacao: Text): Color =
+        Switch(
+          situacao,
+          "No prazo", CorSucesso,
+          "Cumprido", CorSucesso,
+          "Em risco", CorAlta,
+          "Estourado", CorCritica,
+          "Não cumprido", CorCritica,
+          CorCinza
+        );
+      CorPrioridade(prioridade: Text): Color =
+        Switch(
+          prioridade,
+          "Crítica", CorCritica,
+          "Alta", CorAlta,
+          "Média", CorDestaque,
+          CorCinza
+        );
+      CorStatus(status: Text): Color =
+        Switch(
+          status,
+          "Aberta", CorDestaque,
+          "Em análise", CorPrimaria,
+          "Aguardando aprovação", CorAlta,
+          "Em tratativa", CorPrimariaEscura,
+          "Resolvida", CorSucesso,
+          CorCinza
+        );
+    OnStart: |-
+      =// Motivos ativos em cache: tabela de configuração pequena, usada no passo 2
+      ClearCollect(
+        colMotivos,
+        Sort(
+          Filter(Motivos, Status = 'Status (Motivos)'.'Ativo(a)'),
+          'Motivo (nc_name)',
+          SortOrder.Ascending
+        )
+      );
+      Set(gblPasso, 1);
+      Set(gblEnviando, false);
+      Set(gblFoto, "")
+    StartScreen: =Screen1
+    Theme: =PowerAppsTheme

@@ -1,0 +1,753 @@
+Screens:
+  scrDetalhe:
+    Properties:
+      Fill: =CorFundo
+      OnVisible: =Set(gblOcorrenciaSel, LookUp(Ocorrências, Ocorrência = gblOcorrenciaSel.Ocorrência))
+    Children:
+      - conDetRaiz:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =CorFundo
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Width: =Parent.Width
+          Children:
+            - conDetTopo:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =CorPrimaria
+                  FillPortions: =0
+                  Height: =96
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingLeft: =8
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                Children:
+                  - btnDetVoltar:
+                      Control: ModernButton
+                      Properties:
+                        AccessibleLabel: ="Voltar"
+                        Appearance: =ButtonAppearance.Transparent
+                        Color: =RGBA(255, 255, 255, 1)
+                        Height: =48
+                        Icon: ="ArrowLeft"
+                        Layout: =ButtonLayout.IconOnly
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =Back()
+                        Text: ="Voltar"
+                        Width: =48
+                  - cmpDetCabecalho:
+                      Control: CanvasComponent
+                      ComponentName: cmpCabecalho
+                      Properties:
+                        FillPortions: =1
+                        Height: =96
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Subtitulo: =gblOcorrenciaSel.Protocolo
+                        Titulo: ="Detalhe da ocorrência"
+            - conDetCorpo:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =12
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =16
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                Children:
+                  - cmpDetCard:
+                      Control: CanvasComponent
+                      ComponentName: cmpCardOcorrencia
+                      Properties:
+                        Abertura: =Text(gblOcorrenciaSel.'Data de Criação', "dd/mm/yyyy hh:mm")
+                        AlignInContainer: =AlignInContainer.Stretch
+                        CorSLA: =CorSLA(Text(gblOcorrenciaSel.'Situação do SLA'))
+                        CorStatus: =CorStatus(Text(gblOcorrenciaSel.'Status (nc_status)'))
+                        Height: =148
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Motivo: =gblOcorrenciaSel.Motivo.'Motivo (nc_name)'
+                        Pedido: ="Pedido " & gblOcorrenciaSel.Pedido.'Número do pedido' & " · " & gblOcorrenciaSel.Cliente.'Nome da Conta'
+                        Protocolo: =gblOcorrenciaSel.Protocolo
+                        SituacaoSLA: =Coalesce(Text(gblOcorrenciaSel.'Situação do SLA'), "Calculando SLA")
+                        Status: =Text(gblOcorrenciaSel.'Status (nc_status)')
+                  - conDetStatus:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =CorBorda
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.None
+                        Fill: =CorSuperficie
+                        FillPortions: =0
+                        Height: =If(IsBlank(gblOcorrenciaSel.'Resolvida em'), 252, 292)
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =14
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =14
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDetStatusTitulo:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTexto
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Bold
+                              Height: =24
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: ="Status e prazos"
+                              Wrap: =false
+                        - conDetLinStatus:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =32
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - lblDetStatusRotulo:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTextoSuave
+                                    FillPortions: =1
+                                    Font: =FonteNC
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: ="Status"
+                                    Wrap: =false
+                              - conDetSeloStatusBox:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: =28
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutJustifyContent: =LayoutJustifyContent.End
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =176
+                                  Children:
+                                    - cmpDetSeloStatus:
+                                        Control: CanvasComponent
+                                        ComponentName: cmpSeloStatus
+                                        Properties:
+                                          Cor: =CorStatus(Text(gblOcorrenciaSel.'Status (nc_status)'))
+                                          Height: =28
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Texto: =Text(gblOcorrenciaSel.'Status (nc_status)')
+                                          Width: =176
+                        - conDetLinPrioridade:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =32
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - lblDetPrioridadeRotulo:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTextoSuave
+                                    FillPortions: =1
+                                    Font: =FonteNC
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: ="Prioridade"
+                                    Wrap: =false
+                              - conDetSeloPrioridadeBox:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: =28
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutJustifyContent: =LayoutJustifyContent.End
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =176
+                                  Children:
+                                    - cmpDetSeloPrioridade:
+                                        Control: CanvasComponent
+                                        ComponentName: cmpSeloStatus
+                                        Properties:
+                                          Cor: =CorPrioridade(Text(gblOcorrenciaSel.Prioridade))
+                                          Height: =28
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Texto: =Coalesce(Text(gblOcorrenciaSel.Prioridade), "A definir")
+                                          Width: =176
+                        - conDetLinSla:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =32
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - lblDetSlaRotulo:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTextoSuave
+                                    FillPortions: =1
+                                    Font: =FonteNC
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: ="Situação do SLA"
+                                    Wrap: =false
+                              - conDetSeloSlaBox:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: =28
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutJustifyContent: =LayoutJustifyContent.End
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =176
+                                  Children:
+                                    - cmpDetSeloSla:
+                                        Control: CanvasComponent
+                                        ComponentName: cmpSeloStatus
+                                        Properties:
+                                          Cor: =CorSLA(Text(gblOcorrenciaSel.'Situação do SLA'))
+                                          Height: =28
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Texto: =Coalesce(Text(gblOcorrenciaSel.'Situação do SLA'), "Calculando")
+                                          Width: =176
+                        - conDetLinResposta:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =32
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - lblDetRespostaRotulo:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTextoSuave
+                                    FillPortions: =1
+                                    Font: =FonteNC
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: ="Primeira resposta até"
+                                    Wrap: =false
+                              - lblDetResposta:
+                                  Control: ModernText
+                                  Properties:
+                                    Align: =Align.Right
+                                    Color: =CorTexto
+                                    Font: =FonteNC
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: =If(IsBlank(gblOcorrenciaSel.'Prazo da primeira resposta'), "Em cálculo", Text(gblOcorrenciaSel.'Prazo da primeira resposta', "dd/mm/yyyy hh:mm"))
+                                    Wrap: =false
+                        - conDetLinSolucao:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =32
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - lblDetSolucaoRotulo:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTextoSuave
+                                    FillPortions: =1
+                                    Font: =FonteNC
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: ="Solução até"
+                                    Wrap: =false
+                              - lblDetSolucao:
+                                  Control: ModernText
+                                  Properties:
+                                    Align: =Align.Right
+                                    Color: =CorTexto
+                                    Font: =FonteNC
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: =If(IsBlank(gblOcorrenciaSel.'Prazo de solução'), "Em cálculo", Text(gblOcorrenciaSel.'Prazo de solução', "dd/mm/yyyy hh:mm"))
+                                    Wrap: =false
+                        - conDetLinResolvida:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =32
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Visible: =!IsBlank(gblOcorrenciaSel.'Resolvida em')
+                            Children:
+                              - lblDetResolvidaRotulo:
+                                  Control: ModernText
+                                  Properties:
+                                    Color: =CorTextoSuave
+                                    FillPortions: =1
+                                    Font: =FonteNC
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: ="Resolvida em"
+                                    Wrap: =false
+                              - lblDetResolvida:
+                                  Control: ModernText
+                                  Properties:
+                                    Align: =Align.Right
+                                    Color: =CorTexto
+                                    Font: =FonteNC
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =28
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: =Text(gblOcorrenciaSel.'Resolvida em', "dd/mm/yyyy hh:mm")
+                                    Wrap: =false
+                  - conDetDescricao:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =CorBorda
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.None
+                        Fill: =CorSuperficie
+                        FillPortions: =0
+                        Height: =156
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =14
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =14
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDetDescricaoTitulo:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTexto
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Bold
+                              Height: =24
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: ="Descrição"
+                              Wrap: =false
+                        - lblDetDescricao:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTexto
+                              Font: =FonteNC
+                              Height: =96
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: =gblOcorrenciaSel.Descrição
+                              VerticalAlign: =VerticalAlign.Top
+                  - conDetEvidencia:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =CorBorda
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.None
+                        Fill: =CorSuperficie
+                        FillPortions: =0
+                        Height: =If(IsBlank(gblOcorrenciaSel.'Foto da evidência'.Full), 112, 310)
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =14
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =14
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDetEvidenciaTitulo:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTexto
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Bold
+                              Height: =24
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: ="Evidência"
+                              Wrap: =false
+                        - imgDetFoto:
+                            Control: Image
+                            Properties:
+                              AccessibleLabel: ="Foto da evidência"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Fill: =CorTint
+                              Height: =220
+                              Image: =gblOcorrenciaSel.'Foto da evidência'.Full
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              RadiusBottomLeft: =10
+                              RadiusBottomRight: =10
+                              RadiusTopLeft: =10
+                              RadiusTopRight: =10
+                              Visible: =!IsBlank(gblOcorrenciaSel.'Foto da evidência'.Full)
+                        - lblDetSemFoto:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTextoSuave
+                              Font: =FonteNC
+                              Height: =22
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =13
+                              Text: ="Sem foto anexada."
+                              Visible: =IsBlank(gblOcorrenciaSel.'Foto da evidência'.Full)
+                              Wrap: =false
+                        - lblDetCoordenadas:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTextoSuave
+                              Font: =FonteNC
+                              Height: =22
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =13
+                              Text: =If(IsBlank(gblOcorrenciaSel.Latitude), "Sem localização registrada.", "Lat " & Text(gblOcorrenciaSel.Latitude, "0.000000") & " · Long " & Text(gblOcorrenciaSel.Longitude, "0.000000"))
+                              Wrap: =false
+                  - conDetHistorico:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =CorBorda
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.None
+                        Fill: =CorSuperficie
+                        FillPortions: =0
+                        Height: |-
+                          =If(
+                            IsEmpty(Filter(Interações, Ocorrência.Ocorrência = gblOcorrenciaSel.Ocorrência && 'Visível ao cliente' = 'Visível ao cliente (Interações)'.Sim)),
+                            82,
+                            390
+                          )
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =14
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =14
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDetHistoricoTitulo:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTexto
+                              Font: =FonteNC
+                              FontWeight: =FontWeight.Bold
+                              Height: =24
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: ="Histórico visível ao cliente"
+                              Wrap: =false
+                        - lblDetHistoricoVazio:
+                            Control: ModernText
+                            Properties:
+                              Color: =CorTextoSuave
+                              Font: =FonteNC
+                              Height: =22
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =13
+                              Text: ="Ainda não há interações visíveis ao cliente."
+                              Visible: =IsEmpty(Filter(Interações, Ocorrência.Ocorrência = gblOcorrenciaSel.Ocorrência && 'Visível ao cliente' = 'Visível ao cliente (Interações)'.Sim))
+                              Wrap: =false
+                        - galDetHistorico:
+                            Control: Gallery
+                            Variant: Vertical
+                            Properties:
+                              AccessibleLabel: ="Histórico de interações visíveis ao cliente"
+                              FillPortions: =0
+                              Height: =330
+                              Items: |-
+                                =Sort(
+                                  Filter(
+                                    Interações,
+                                    Ocorrência.Ocorrência = gblOcorrenciaSel.Ocorrência && 'Visível ao cliente' = 'Visível ao cliente (Interações)'.Sim
+                                  ),
+                                  'Data de Criação',
+                                  SortOrder.Descending
+                                )
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Selectable: =false
+                              TemplatePadding: =0
+                              TemplateSize: =110
+                              Visible: =!IsEmpty(Filter(Interações, Ocorrência.Ocorrência = gblOcorrenciaSel.Ocorrência && 'Visível ao cliente' = 'Visível ao cliente (Interações)'.Sim))
+                            Children:
+                              - conDetIntLinha:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    Height: =Parent.TemplateHeight
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    PaddingBottom: =4
+                                    PaddingTop: =4
+                                    Width: =Parent.TemplateWidth
+                                  Children:
+                                    - conDetIntCard:
+                                        Control: GroupContainer
+                                        Variant: AutoLayout
+                                        Properties:
+                                          BorderColor: =CorBorda
+                                          BorderThickness: =1
+                                          DropShadow: =DropShadow.None
+                                          Fill: =CorFundo
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutDirection: =LayoutDirection.Vertical
+                                          LayoutGap: =2
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =10
+                                          PaddingLeft: =12
+                                          PaddingRight: =12
+                                          PaddingTop: =10
+                                          RadiusBottomLeft: =10
+                                          RadiusBottomRight: =10
+                                          RadiusTopLeft: =10
+                                          RadiusTopRight: =10
+                                        Children:
+                                          - conDetIntTopo:
+                                              Control: GroupContainer
+                                              Variant: AutoLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                FillPortions: =0
+                                                Height: =22
+                                                LayoutAlignItems: =LayoutAlignItems.Center
+                                                LayoutDirection: =LayoutDirection.Horizontal
+                                                LayoutGap: =8
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                              Children:
+                                                - lblDetIntData:
+                                                    Control: ModernText
+                                                    Properties:
+                                                      Color: =CorTextoSuave
+                                                      FillPortions: =1
+                                                      Font: =FonteNC
+                                                      Height: =20
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      PaddingBottom: =0
+                                                      PaddingLeft: =0
+                                                      PaddingTop: =0
+                                                      Size: =12
+                                                      Text: =Text(ThisItem.'Data de Criação', "dd/mm/yyyy hh:mm")
+                                                      Wrap: =false
+                                                - lblDetIntTipo:
+                                                    Control: ModernText
+                                                    Properties:
+                                                      Align: =Align.Center
+                                                      Color: =CorPrimaria
+                                                      Fill: =CorTint
+                                                      Font: =FonteNC
+                                                      FontWeight: =FontWeight.Semibold
+                                                      Height: =22
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      PaddingBottom: =0
+                                                      PaddingTop: =0
+                                                      RadiusBottomLeft: =11
+                                                      RadiusBottomRight: =11
+                                                      RadiusTopLeft: =11
+                                                      RadiusTopRight: =11
+                                                      Size: =11
+                                                      Text: =Text(ThisItem.Tipo)
+                                                      Width: =150
+                                                      Wrap: =false
+                                          - lblDetIntResumo:
+                                              Control: ModernText
+                                              Properties:
+                                                Color: =CorTexto
+                                                Font: =FonteNC
+                                                FontWeight: =FontWeight.Semibold
+                                                Height: =20
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingLeft: =0
+                                                PaddingTop: =0
+                                                Size: =14
+                                                Text: =ThisItem.Resumo
+                                                Wrap: =false
+                                          - lblDetIntTexto:
+                                              Control: ModernText
+                                              Properties:
+                                                Color: =CorTexto
+                                                Font: =FonteNC
+                                                Height: =36
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingLeft: =0
+                                                PaddingTop: =0
+                                                Size: =12
+                                                Text: =ThisItem.Texto
+                                                VerticalAlign: =VerticalAlign.Top
